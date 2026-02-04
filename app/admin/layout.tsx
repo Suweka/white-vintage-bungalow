@@ -4,6 +4,7 @@ import { AdminSidebar } from '@/components/admin/sidebar';
 import { Bell, Search, Settings, LogOut } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { getAdminUser, clearAuth } from '@/lib/auth';
 
 interface AdminUser {
@@ -88,7 +89,13 @@ export default function AdminLayout({
               </button>
 
               <div className="flex items-center gap-3 pl-4 border-l">
-                <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                <Image
+                  src="/images/avatars/admin.jpg"
+                  alt={user.name}
+                  width={40}
+                  height={40}
+                  className="rounded-full object-cover"
+                />
                 <div className="flex-1">
                   <h4 className="text-sm font-semibold">{user.name}</h4>
                   <p className="text-xs text-gray-500">{user.role}</p>

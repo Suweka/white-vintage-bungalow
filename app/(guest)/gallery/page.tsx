@@ -5,6 +5,13 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Category = 'all' | 'rooms' | 'facilities' | 'location' | 'food';
 
+interface GalleryImage {
+  id: number;
+  category: Category | string;
+  title: string;
+  src: string;
+}
+
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [lightboxImage, setLightboxImage] = useState<number | null>(null);
@@ -17,26 +24,34 @@ export default function GalleryPage() {
     { id: 'food' as Category, label: 'Food & Dining' },
   ];
 
-  // Mock gallery data
-  const images = [
-    { id: 1, category: 'rooms', title: 'Deluxe Room' },
-    { id: 2, category: 'rooms', title: 'Junior Suite' },
-    { id: 3, category: 'rooms', title: 'Family Room' },
-    { id: 4, category: 'facilities', title: 'Swimming Pool' },
-    { id: 5, category: 'facilities', title: 'Fitness Center' },
-    { id: 6, category: 'facilities', title: 'Spa Area' },
-    { id: 7, category: 'location', title: 'Tea Plantation View' },
-    { id: 8, category: 'location', title: 'Mountain Scenery' },
-    { id: 9, category: 'location', title: 'Garden Area' },
-    { id: 10, category: 'food', title: 'Restaurant' },
-    { id: 11, category: 'food', title: 'Breakfast Buffet' },
-    { id: 12, category: 'food', title: 'Fine Dining' },
-    { id: 13, category: 'rooms', title: 'Bathroom' },
-    { id: 14, category: 'rooms', title: 'Living Area' },
-    { id: 15, category: 'facilities', title: 'Reception' },
-    { id: 16, category: 'location', title: 'Exterior View' },
-    { id: 17, category: 'food', title: 'Bar Area' },
-    { id: 18, category: 'facilities', title: 'Conference Room' },
+  const images: GalleryImage[] = [
+    // Rooms
+    { id: 1, category: 'rooms', title: 'Deluxe Room', src: '/images/rooms/deluxe.jpeg' },
+    { id: 2, category: 'rooms', title: 'Junior Suite', src: '/images/rooms/suite.jpeg' },
+    { id: 3, category: 'rooms', title: 'Family Room', src: '/images/rooms/family.jpeg' },
+    { id: 13, category: 'rooms', title: 'Bathroom', src: '/images/rooms/junior.jpeg' },
+    { id: 14, category: 'rooms', title: 'Living Area', src: '/images/rooms/executive.jpeg' },
+
+    // Facilities
+    { id: 4, category: 'facilities', title: 'Kitchen', src: '/images/kitchen.jpeg' },
+    { id: 5, category: 'facilities', title: 'Living Area', src: '/images/living-area.jpeg' },
+    { id: 6, category: 'facilities', title: 'Living Area', src: '/images/living-area2.jpeg' },
+    { id: 15, category: 'facilities', title: 'Dining Area', src: '/images/dining-area.jpeg' },
+    { id: 18, category: 'facilities', title: 'Garden', src: '/images/location5.jpeg' },
+
+    // Location
+    { id: 7, category: 'location', title: 'Tea Plantation View', src: '/images/location1.jpeg' },
+    { id: 8, category: 'location', title: 'Mountain Scenery', src: '/images/location2.jpeg' },
+    { id: 9, category: 'location', title: 'Garden Area', src: '/images/location3.jpeg' },
+    { id: 16, category: 'location', title: 'Exterior View', src: '/images/location4.jpeg' },
+    { id: 20, category: 'location', title: 'Exterior View', src: '/images/location6.jpeg' },
+
+
+    // Food & Dining
+    { id: 10, category: 'food', title: 'Garden', src: '/images/food1.jpeg' },
+    { id: 11, category: 'food', title: 'Breakfast Buffet', src: '/images/food2.jpeg' },
+    { id: 12, category: 'food', title: 'Fine Dining', src: '/images/food3.jpeg' },
+    { id: 17, category: 'food', title: 'Bar Area', src: '/images/food4.jpeg' },
   ];
 
   const filteredImages = activeCategory === 'all' 
@@ -111,7 +126,11 @@ export default function GalleryPage() {
               className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group"
               onClick={() => openLightbox(index)}
             >
-              <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400 group-hover:scale-110 transition-transform duration-300" />
+              <img
+                src={image.src}
+                alt={image.title}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-300" />
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                 <p className="font-semibold">{image.title}</p>
@@ -142,7 +161,7 @@ export default function GalleryPage() {
 
       {/* Lightbox */}
       {lightboxImage !== null && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
           <button
             onClick={closeLightbox}
             className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
@@ -157,8 +176,12 @@ export default function GalleryPage() {
             <ChevronLeft size={48} />
           </button>
 
-          <div className="max-w-6xl w-full h-full flex items-center justify-center p-8">
-            <div className="relative w-full aspect-video bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg" />
+          <div className="max-w-6xl w-full h-full flex items-center justify-center">
+            <img
+              src={filteredImages[lightboxImage].src}
+              alt={filteredImages[lightboxImage].title}
+              className="max-h-full max-w-full object-contain rounded-lg"
+            />
           </div>
 
           <button

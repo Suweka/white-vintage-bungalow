@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 import {
   LayoutDashboard,
   Calendar,
@@ -107,7 +108,13 @@ export const AdminSidebar = () => {
         {/* User Profile */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+            <Image
+              src="/images/avatars/admin.jpg"
+              alt="Admin User"
+              width={40}
+              height={40}
+              className="rounded-full object-cover"
+            />
             <div className="flex-1">
               <h4 className="font-semibold text-sm">Jaylan Dorwart</h4>
               <p className="text-xs text-gray-500">Admin</p>

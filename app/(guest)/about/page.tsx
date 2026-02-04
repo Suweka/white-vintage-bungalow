@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button';
 import { Award, Users, Heart, Shield, Star, CheckCircle } from 'lucide-react';
 
@@ -36,10 +37,10 @@ export default function AboutPage() {
   ];
 
   const team = [
-    { name: 'John Anderson', position: 'General Manager', image: '/images/team/1.jpg' },
-    { name: 'Sarah Williams', position: 'Guest Relations Manager', image: '/images/team/2.jpg' },
-    { name: 'Michael Chen', position: 'Head Chef', image: '/images/team/3.jpg' },
-    { name: 'Emma Thompson', position: 'Housekeeping Manager', image: '/images/team/4.jpg' },
+    { name: 'Lalith Prasanna', position: 'Owner', image: '/images/team/1.jpeg' },
+    { name: 'Maduri Hansika', position: 'Manager', image: '/images/team/2.jpeg' },
+    { name: 'Nilanga Perera', position: 'Head Chef', image: '/images/team/3.jpg' },
+    { name: 'Suweka Jayakody', position: 'IT Manager', image: '/images/team/4.jpeg' },
   ];
 
   const milestones = [
@@ -52,8 +53,13 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-[500px] bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white">
-        <div className="absolute inset-0 bg-cover bg-center opacity-40" />
+      <section className="relative h-[500px] bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white overflow-hidden">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="White Vintage Bungalow"
+          fill
+          className="object-cover opacity-40"
+        />
         <div className="relative z-10 text-center max-w-4xl px-4">
           <h1 className="text-5xl md:text-6xl font-heading font-bold mb-4">About Us</h1>
           <p className="text-xl text-gray-200">
@@ -107,8 +113,20 @@ export default function AboutPage() {
               </Button>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="h-64 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg" />
-              <div className="h-64 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg mt-8" />
+              <Image
+                src="/images/about/about1.jpeg"
+                alt="White Vintage Bungalow Interior"
+                width={400}
+                height={300}
+                className="rounded-lg object-cover h-64 w-full"
+              />
+              <Image
+                src="/images/about/about2.jpeg"
+                alt="White Vintage Bungalow Exterior"
+                width={400}
+                height={300}
+                className="rounded-lg object-cover h-64 w-full mt-8"
+              />
             </div>
           </div>
         </div>
@@ -178,7 +196,13 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {team.map((member, index) => (
               <div key={index} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-gray-300 to-gray-400" />
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={300}
+                  height={256}
+                  className="w-full h-64 object-cover"
+                />
                 <div className="p-6 text-center">
                   <h3 className="text-xl font-heading font-semibold mb-1">{member.name}</h3>
                   <p className="text-gray-600">{member.position}</p>
@@ -199,9 +223,18 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { title: 'Best Heritage Hotel 2024', org: 'Sri Lanka Tourism Awards' },
-              { title: 'Excellence in Service', org: 'TripAdvisor Certificate' },
-              { title: 'Sustainable Tourism', org: 'Green Hotels Association' },
+              {
+                title: 'Best Heritage Hotel 2024',
+                org: 'Sri Lanka Tourism Awards',
+              },
+              {
+                title: 'Excellence in Service',
+                org: 'TripAdvisor Certificate',
+              },
+              {
+                title: 'Sustainable Tourism',
+                org: 'Green Hotels Association',
+              },
             ].map((award, index) => (
               <div key={index} className="text-center p-6 bg-primary-light rounded-lg">
                 <Award className="text-primary mx-auto mb-4" size={48} />
@@ -228,7 +261,7 @@ export default function AboutPage() {
               'Modern luxury amenities',
               'Stunning mountain views',
               'Award-winning hospitality',
-            ].map((reason, index) => (
+            ].map((reason: string, index: number) => (
               <div key={index} className="flex items-center gap-3">
                 <CheckCircle size={24} className="text-accent flex-shrink-0" />
                 <span className="text-lg">{reason}</span>
