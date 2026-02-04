@@ -12,16 +12,51 @@ import {
   CreditCard,
   Check,
   ChevronRight,
+  ChevronLeft,
   AlertCircle,
 } from 'lucide-react';
 
 type BookingStep = 'dates' | 'details' | 'payment' | 'confirmation';
 
+// Room data
+const ROOMS = [
+  {
+    id: 'deluxe-room',
+    name: 'Deluxe Room',
+    price: 15000,
+    maxGuests: 2,
+    image: '/images/rooms/deluxe.jpeg',
+  },
+  {
+    id: 'suite-room',
+    name: 'Suite Room',
+    price: 25000,
+    maxGuests: 3,
+    image: '/images/rooms/suite.jpeg',
+  },
+  {
+    id: 'family-room',
+    name: 'Family Room',
+    price: 35000,
+    maxGuests: 4,
+    image: '/images/rooms/family.jpeg',
+  },
+  {
+    id: 'executive-suite',
+    name: 'Executive Suite',
+    price: 45000,
+    maxGuests: 2,
+    image: '/images/rooms/executive.jpeg',
+  },
+];
+
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState<BookingStep>('dates');
+  const [selectedRoom, setSelectedRoom] = useState('deluxe-room');
   const [checkInDate, setCheckInDate] = useState<Date | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Date | null>(null);
   const [guests, setGuests] = useState(2);
+  const [currentMonth, setCurrentMonth] = useState(new Date(2026, 1)); // February 2026
   
   const [guestDetails, setGuestDetails] = useState({
     firstName: '',
@@ -36,24 +71,88 @@ export default function BookingPage() {
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'helapay' | 'webxpay' | 'bank'>('card');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  // Mock room data
-  const roomDetails = {
-    name: 'Deluxe Room',
-    pricePerNight: 15000,
-    image: '/images/rooms/deluxe.jpg',
-  };
+  // Get selected room data
+  const room = ROOMS.find(r => r.id === selectedRoom) || ROOMS[0];
 
   const calculateTotal = () => {
     if (!checkInDate || !checkOutDate) return { nights: 0, subtotal: 0, tax: 0, total: 0 };
     const nights = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
     );
-    const subtotal = nights * roomDetails.pricePerNight;
+    const subtotal = nights * room.price;
     const tax = subtotal * 0.1; // 10% tax
     return { nights, subtotal, tax, total: subtotal + tax };
   };
 
   const totals = calculateTotal();
+
+  // Calendar generation
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const days = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    
+    // Add all days of the month
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(new Date(year, month, i));
+    }
+    
+    return days;
+  };
+
+  const days = getDaysInMonth(currentMonth);
+
+  const handleDateClick = (date: Date) => {
+    if (!checkInDate || (checkInDate && checkOutDate)) {
+      // Set check-in date
+      setCheckInDate(date);
+      setCheckOutDate(null);
+    } else if (checkInDate && !checkOutDate) {
+      // Set check-out date
+      if (date > checkInDate) {
+        setCheckOutDate(date);
+      } else {
+        // If selected date is before check-in, reset
+        setCheckInDate(date);
+        setCheckOutDate(null);
+      }
+    }
+  };
+
+  const isDateSelected = (date: Date | null) => {
+    if (!date) return false;
+    if (checkInDate && date.getTime() === checkInDate.getTime()) return true;
+    if (checkOutDate && date.getTime() === checkOutDate.getTime()) return true;
+    return false;
+  };
+
+  const isDateInRange = (date: Date | null) => {
+    if (!date || !checkInDate || !checkOutDate) return false;
+    return date > checkInDate && date < checkOutDate;
+  };
+
+  const formatDate = (date: Date | null) => {
+    if (!date) return '';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
+  const nextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+  };
+
+  const prevMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+  };
 
   const handleDateSelect = (checkIn: Date | null, checkOut: Date | null) => {
     setCheckInDate(checkIn);
@@ -65,6 +164,15 @@ export default function BookingPage() {
       ...guestDetails,
       [e.target.name]: e.target.value,
     });
+  };
+
+  // Update guests when room changes to not exceed max
+  const handleRoomChange = (roomId: string) => {
+    setSelectedRoom(roomId);
+    const newRoom = ROOMS.find(r => r.id === roomId);
+    if (newRoom && guests > newRoom.maxGuests) {
+      setGuests(newRoom.maxGuests);
+    }
   };
 
   const canProceedToDetails = checkInDate && checkOutDate;
@@ -124,6 +232,24 @@ export default function BookingPage() {
               <div className="bg-white rounded-lg shadow-md p-8">
                 <h2 className="text-2xl font-heading font-bold mb-6">Select Your Dates</h2>
                 
+                {/* Room Selection Dropdown */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Room
+                  </label>
+                  <select
+                    value={selectedRoom}
+                    onChange={(e) => handleRoomChange(e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-base"
+                  >
+                    {ROOMS.map((room) => (
+                      <option key={room.id} value={room.id}>
+                        {room.name} - {formatCurrency(room.price)} per night (Max {room.maxGuests} guests)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Number of Guests
@@ -131,20 +257,116 @@ export default function BookingPage() {
                   <select
                     value={guests}
                     onChange={(e) => setGuests(parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-base"
                   >
-                    {[1, 2, 3, 4].map((num) => (
-                      <option key={num} value={num}>
-                        {num} Guest{num > 1 ? 's' : ''}
+                    {[...Array(room.maxGuests)].map((_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1} Guest{i > 0 ? 's' : ''}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                <BookingCalendar
-                  onDateSelect={handleDateSelect}
-                  unavailableDates={[]}
-                />
+                {/* Calendar */}
+                <div className="border border-gray-200 rounded-lg p-4">
+                  {/* Month Navigation */}
+                  <div className="flex items-center justify-between mb-4">
+                    <button
+                      onClick={prevMonth}
+                      className="p-2 hover:bg-gray-100 rounded-lg"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <h3 className="text-lg font-semibold">
+                      {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </h3>
+                    <button
+                      onClick={nextMonth}
+                      className="p-2 hover:bg-gray-100 rounded-lg"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-7 gap-1 mb-2">
+                    {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                      <div
+                        key={day}
+                        className="text-center text-sm font-medium text-gray-600 py-2"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-7 gap-1">
+                    {days.map((date, index) => {
+                      if (!date) {
+                        return <div key={`empty-${index}`} className="aspect-square" />;
+                      }
+
+                      const isSelected = isDateSelected(date);
+                      const inRange = isDateInRange(date);
+                      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+
+                      return (
+                        <button
+                          key={date.toISOString()}
+                          onClick={() => !isPast && handleDateClick(date)}
+                          disabled={isPast}
+                          className={`
+                            aspect-square flex items-center justify-center rounded-lg text-sm
+                            ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-gray-100'}
+                            ${isSelected ? 'bg-primary text-white hover:bg-primary/90' : ''}
+                            ${inRange ? 'bg-primary-light' : ''}
+                          `}
+                        >
+                          {date.getDate()}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex items-center gap-4 mt-4 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 bg-primary rounded"></div>
+                      <span className="text-gray-600">Selected</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 bg-primary-light rounded"></div>
+                      <span className="text-gray-600">In Range</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 bg-gray-200 rounded"></div>
+                      <span className="text-gray-600">Unavailable</span>
+                    </div>
+                  </div>
+
+                  {/* Selected Dates Display */}
+                  {checkInDate && (
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm text-gray-600 mb-1">Check-in</p>
+                          <p className="font-semibold">{formatDate(checkInDate)}</p>
+                        </div>
+                        {checkOutDate && (
+                          <div>
+                            <p className="text-sm text-gray-600 mb-1">Check-out</p>
+                            <p className="font-semibold">{formatDate(checkOutDate)}</p>
+                          </div>
+                        )}
+                      </div>
+                      {totals.nights > 0 && (
+                        <p className="text-sm text-gray-600 mt-2">
+                          {totals.nights} night{totals.nights !== 1 ? 's' : ''}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div className="mt-6 flex justify-end">
                   <Button
@@ -434,7 +656,7 @@ export default function BookingPage() {
                 <h2 className="text-3xl font-heading font-bold mb-4">Booking Confirmed!</h2>
                 <p className="text-gray-600 mb-2">Thank you for your reservation</p>
                 <p className="text-lg font-semibold mb-6">
-                  Booking Reference: <span className="text-primary">WVB-2025-001</span>
+                  Booking Reference: <span className="text-primary">WVB-2026-001</span>
                 </p>
 
                 <div className="bg-primary-light p-6 rounded-lg mb-6 text-left">
@@ -443,6 +665,10 @@ export default function BookingPage() {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Guest Name:</span>
                       <span className="font-medium">{guestDetails.firstName} {guestDetails.lastName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Room Type:</span>
+                      <span className="font-medium">{room.name}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Check-in:</span>
@@ -457,8 +683,8 @@ export default function BookingPage() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Room Type:</span>
-                      <span className="font-medium">{roomDetails.name}</span>
+                      <span className="text-gray-600">Guests:</span>
+                      <span className="font-medium">{guests} Guest{guests > 1 ? 's' : ''}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Total Amount:</span>
@@ -494,7 +720,7 @@ export default function BookingPage() {
               {/* Room Info */}
               <div className="mb-4 pb-4 border-b">
                 <div className="h-32 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg mb-3"></div>
-                <h4 className="font-semibold">{roomDetails.name}</h4>
+                <h4 className="font-semibold">{room.name}</h4>
                 <p className="text-sm text-gray-600">{guests} Guest{guests > 1 ? 's' : ''}</p>
               </div>
 
@@ -525,7 +751,7 @@ export default function BookingPage() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">
-                      {formatCurrency(roomDetails.pricePerNight)} × {totals.nights} night{totals.nights > 1 ? 's' : ''}
+                      {formatCurrency(room.price)} × {totals.nights} night{totals.nights > 1 ? 's' : ''}
                     </span>
                     <span className="font-medium">{formatCurrency(totals.subtotal)}</span>
                   </div>
