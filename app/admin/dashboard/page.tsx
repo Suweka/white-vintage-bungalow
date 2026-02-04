@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getAdminUser } from '@/lib/auth';
 import {
   Users,
   Calendar,
@@ -14,6 +16,24 @@ import {
 } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const adminUser = getAdminUser();
+    if (!adminUser) {
+      router.push('/admin/login');
+    } else {
+      setUser(adminUser);
+      setLoading(false);
+    }
+  }, [router]);
+
+  if (loading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
   // Mock data - replace with real API calls
   const stats = [
     {

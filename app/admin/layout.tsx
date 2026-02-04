@@ -1,11 +1,63 @@
-import { AdminSidebar } from '@/components/admin/Sidebar';
-import { Bell, Search, Settings } from 'lucide-react';
+'use client';
+
+import { AdminSidebar } from '@/components/admin/sidebar';
+import { Bell, Search, Settings, LogOut } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getAdminUser, clearAuth } from '@/lib/auth';
+
+interface AdminUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [user, setUser] = useState<AdminUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Skip auth check for login page
+    if (pathname === '/admin/login') {
+      setLoading(false);
+      return;
+    }
+
+    const adminUser = getAdminUser();
+    if (!adminUser) {
+      router.push('/admin/login');
+    } else {
+      setUser(adminUser);
+      setLoading(false);
+    }
+  }, [router, pathname]);
+
+  // For login page, render children without sidebar
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
+  if (loading || !user) {
+    return <div className="p-6">Loading...</div>;
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      clearAuth();
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminSidebar />
@@ -37,10 +89,17 @@ export default function AdminLayout({
 
               <div className="flex items-center gap-3 pl-4 border-l">
                 <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                <div>
-                  <h4 className="text-sm font-semibold">Jaylan Dorwart</h4>
-                  <p className="text-xs text-gray-500">Admin</p>
+                <div className="flex-1">
+                  <h4 className="text-sm font-semibold">{user.name}</h4>
+                  <p className="text-xs text-gray-500">{user.role}</p>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 hover:text-red-600 transition-colors"
+                  title="Logout"
+                >
+                  <LogOut size={20} />
+                </button>
               </div>
             </div>
           </div>
