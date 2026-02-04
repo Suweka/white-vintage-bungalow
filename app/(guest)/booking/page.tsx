@@ -719,7 +719,11 @@ export default function BookingPage() {
 
               {/* Room Info */}
               <div className="mb-4 pb-4 border-b">
-                <div className="h-32 bg-gradient-to-br from-gray-300 to-gray-400 rounded-lg mb-3"></div>
+                <img 
+                  src={room.image} 
+                  alt={room.name}
+                  className="h-32 w-full object-cover rounded-lg mb-3"
+                />
                 <h4 className="font-semibold">{room.name}</h4>
                 <p className="text-sm text-gray-600">{guests} Guest{guests > 1 ? 's' : ''}</p>
               </div>
