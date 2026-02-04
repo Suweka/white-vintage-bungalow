@@ -9,11 +9,35 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: {
+          DEFAULT: "#208f6a",
+          light: "#e9f0ec",
+          dark: "#1a7356",
+        },
+        accent: {
+          DEFAULT: "#e5c466",
+          light: "#f5e8b3",
+        },
+        background: "#ffffff",
+        foreground: "#1a202c",
+        border: "#e2e8f0",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
+        heading: ["var(--font-poppins)", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      animation: {
+        fadeIn: "fadeIn 0.5s ease-out",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
     },
   },
   plugins: [],
 };
+
 export default config;

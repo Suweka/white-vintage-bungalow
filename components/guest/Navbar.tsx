@@ -59,9 +59,11 @@ export const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
-              <Button variant="primary" size="md">
-                Book Now
-              </Button>
+              <Link href="/booking">
+                <Button variant="primary" size="md">
+                  Book Now
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -88,9 +90,11 @@ export const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
-              <Button variant="primary" size="md" className="w-full">
-                Book Now
-              </Button>
+              <Link href="/booking">
+                <Button variant="primary" size="md" className="w-full">
+                  Book Now
+                </Button>
+              </Link>
             </div>
           </div>
         )}
