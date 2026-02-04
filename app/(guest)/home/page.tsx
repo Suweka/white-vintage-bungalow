@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { RoomCard } from '@/components/guest/RoomCard';
 import { 
@@ -13,10 +14,17 @@ import {
   UtensilsCrossed,
   Star,
   MapPin,
-  Calendar
+  Calendar,
+  AlertCircle
 } from 'lucide-react';
 
 export default function HomePage() {
+  const router = useRouter();
+  const [checkInDate, setCheckInDate] = useState('');
+  const [checkOutDate, setCheckOutDate] = useState('');
+  const [guests, setGuests] = useState('2');
+  const [error, setError] = useState('');
+
   // Mock data - replace with API calls
   const rooms = [
     {
@@ -74,6 +82,46 @@ export default function HomePage() {
     },
   ];
 
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
+
+  // Validate dates
+  const validateDates = () => {
+    setError('');
+
+    if (!checkInDate || !checkOutDate) {
+      setError('Please select both check-in and check-out dates');
+      return false;
+    }
+
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (checkIn < today) {
+      setError('Check-in date cannot be in the past');
+      return false;
+    }
+
+    if (checkOut <= checkIn) {
+      setError('Check-out date must be after check-in date');
+      return false;
+    }
+
+    return true;
+  };
+
+  // Handle check availability
+  const handleCheckAvailability = () => {
+    if (validateDates()) {
+      router.push(`/booking?checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
+    }
+  };
+
   return (
     <div>
       {/* Hero Section */}
@@ -91,12 +139,16 @@ export default function HomePage() {
             Experience colonial elegance in the heart of Sri Lanka's hill country
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="primary" size="lg">
-              Book Your Stay
-            </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-gray-900">
-              Explore Rooms
-            </Button>
+            <Link href="/booking">
+              <Button variant="primary" size="lg">
+                Book Your Stay
+              </Button>
+            </Link>
+            <Link href="/rooms">
+              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-gray-900">
+                Explore Rooms
+              </Button>
+            </Link>
           </div>
         </div>
         
@@ -112,34 +164,61 @@ export default function HomePage() {
       <section className="bg-white shadow-lg -mt-16 relative z-20 max-w-6xl mx-auto rounded-lg overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x">
           <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block">Check In</label>
-            <div className="flex items-center gap-2 text-gray-900">
-              <Calendar size={20} />
-              <span className="font-medium">Select Date</span>
-            </div>
+            <label className="text-sm text-gray-600 mb-2 block font-medium">Check In</label>
+            <input
+              type="date"
+              value={checkInDate}
+              onChange={(e) => {
+                setCheckInDate(e.target.value);
+                setError('');
+              }}
+              min={getTodayDate()}
+              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
+            />
           </div>
           <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block">Check Out</label>
-            <div className="flex items-center gap-2 text-gray-900">
-              <Calendar size={20} />
-              <span className="font-medium">Select Date</span>
-            </div>
+            <label className="text-sm text-gray-600 mb-2 block font-medium">Check Out</label>
+            <input
+              type="date"
+              value={checkOutDate}
+              onChange={(e) => {
+                setCheckOutDate(e.target.value);
+                setError('');
+              }}
+              min={checkInDate || getTodayDate()}
+              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
+            />
           </div>
           <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block">Guests</label>
-            <select className="w-full font-medium text-gray-900 bg-transparent">
-              <option>1 Guest</option>
-              <option>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
+            <label className="text-sm text-gray-600 mb-2 block font-medium">Guests</label>
+            <select 
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
+            >
+              <option value="1">1 Guest</option>
+              <option value="2">2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
             </select>
           </div>
           <div className="p-6 flex items-center">
-            <Button variant="primary" size="lg" className="w-full">
+            <Button 
+              variant="primary" 
+              size="lg" 
+              className="w-full"
+              onClick={handleCheckAvailability}
+            >
               Check Availability
             </Button>
           </div>
         </div>
+        {error && (
+          <div className="px-6 py-3 bg-red-50 border-t border-red-200 flex items-start gap-3">
+            <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
       </section>
 
       {/* About Section */}
@@ -162,28 +241,28 @@ export default function HomePage() {
                 misty mountains, we provide an authentic Sri Lankan hill country experience 
                 with world-class hospitality.
               </p>
-              <Button variant="primary" size="lg">
-                Learn More →
-              </Button>
+              <Link href="/about">
+                <Button variant="primary" size="lg">
+                  Learn More →
+                </Button>
+              </Link>
             </div>
-                   <div className="grid grid-cols-2 gap-4">
-                     <div className="h-64 rounded-lg overflow-hidden">
-                       <img 
-                           src="/images/about/about1.jpeg" 
-                           alt="White Vintage Bungalow interior" 
-                           className="w-full h-full object-cover"
-                         />
-                     </div>
-
-                    <div className="h-64 rounded-lg overflow-hidden mt-8">
-                        <img 
-                            src="/images/about/about2.jpeg" 
-                            alt="Luxury suite" 
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                </div>
-
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-64 rounded-lg overflow-hidden">
+                <img 
+                  src="/images/about/about1.jpeg" 
+                  alt="White Vintage Bungalow interior" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="h-64 rounded-lg overflow-hidden mt-8">
+                <img 
+                  src="/images/about/about2.jpeg" 
+                  alt="Luxury suite" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -234,76 +313,57 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Video Section */}
       <section className="py-20 px-4 bg-gray-900 text-white">
-  <div className="container mx-auto">
-    <div className="relative h-[500px] rounded-lg overflow-hidden">
-
-      {/* Video */}
-      <video
-        src="/videos/intro.mp4"
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
-
-      {/* Optional dark overlay */}
-      <div className="absolute inset-0 bg-black/30"></div>
-
-      {/* Optional center content */}
-      <div className="absolute inset-0 flex items-center justify-center text-center">
-        {/* Example: A play button overlay or text */}
-        {/* Remove this div if you don't need anything in the center */}
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-      {/* Testimonials */}
-         <section className="py-20 px-4 bg-primary-light">
-  <div className="container mx-auto">
-    <div className="text-center mb-12">
-      <div className="text-primary font-medium mb-2">TESTIMONIALS</div>
-      <h2 className="text-4xl font-heading font-bold">Amazing Feedback From Our Guests</h2>
-    </div>
-
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-      {testimonials.map((testimonial, index) => (
-        <div key={index} className="bg-white p-8 rounded-lg shadow-md">
-          
-          {/* Star Rating */}
-          <div className="flex gap-1 mb-4">
-            {[...Array(testimonial.rating)].map((_, i) => (
-              <Star key={i} className="fill-accent text-accent" size={20} />
-            ))}
-          </div>
-
-          {/* Testimonial Text */}
-          <p className="text-gray-700 mb-6 italic">
-            "{testimonial.text}"
-          </p>
-
-          {/* Avatar + Info */}
-          <div className="flex items-center gap-4">
-            <img
-              src={testimonial.avatar}
-              alt={testimonial.name}
-              className="w-12 h-12 rounded-full object-cover shadow-sm"
+        <div className="container mx-auto">
+          <div className="relative h-[500px] rounded-lg overflow-hidden">
+            <video
+              src="/videos/intro.mp4"
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
             />
-
-            <div>
-              <div className="font-semibold">{testimonial.name}</div>
-              <div className="text-sm text-gray-500">Guest</div>
-            </div>
+            <div className="absolute inset-0 bg-black/30"></div>
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 px-4 bg-primary-light">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <div className="text-primary font-medium mb-2">TESTIMONIALS</div>
+            <h2 className="text-4xl font-heading font-bold">Amazing Feedback From Our Guests</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="bg-white p-8 rounded-lg shadow-md">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="fill-accent text-accent" size={20} />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-6 italic">
+                  "{testimonial.text}"
+                </p>
+                <div className="flex items-center gap-4">
+                  <img
+                    src={testimonial.avatar}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover shadow-sm"
+                  />
+                  <div>
+                    <div className="font-semibold">{testimonial.name}</div>
+                    <div className="text-sm text-gray-500">Guest</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Location Section */}
       <section className="py-20 px-4">
@@ -332,21 +392,26 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              <Button variant="primary" size="lg">
-                Get Directions
-              </Button>
+              <a 
+                href="https://www.google.com/maps/search/78%2F5+Bakers+Park,+Dawson+Hills,+Nuwara+Eliya/@6.942114,80.793866,15z" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button variant="primary" size="lg">
+                  Get Directions
+                </Button>
+              </a>
             </div>
             <div className="h-96 bg-gray-300 rounded-lg overflow-hidden relative">
-            <iframe
-               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.568038677998!2d80.79386617448296!3d6.942114618158248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae38127c9b1b06d%3A0x98ebbcd4fa73d315!2sWhite%20Vintage%20Bungalow!5e0!3m2!1sen!2slk!4v1765016591928!5m2!1sen!2slk"
-               className="w-full h-full"
-               style={{ border: 0 }}
-               allowFullScreen={true}
-               loading="lazy"
-               referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.568038677998!2d80.79386617448296!3d6.942114618158248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae38127c9b1b06d%3A0x98ebbcd4fa73d315!2sWhite%20Vintage%20Bungalow!5e0!3m2!1sen!2slk!4v1765016591928!5m2!1sen!2slk"
+                className="w-full h-full"
+                style={{ border: 0 }}
+                allowFullScreen={true}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
-
           </div>
         </div>
       </section>
