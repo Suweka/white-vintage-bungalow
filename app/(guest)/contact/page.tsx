@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, MessageCircle, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -42,6 +42,13 @@ export default function ContactPage() {
       title: 'Email',
       details: ['Send us your query anytime!', 'info@whitevintage.com'],
     },
+  ];
+
+  const socialLinks = [
+    { icon: Facebook, label: 'facebook', url: 'https://facebook.com/whitevintage' },
+    { icon: Twitter, label: 'twitter', url: 'https://twitter.com/whitevintage' },
+    { icon: Instagram, label: 'instagram', url: 'https://instagram.com/whitevintage' },
+    { icon: Youtube, label: 'youtube', url: 'https://youtube.com/@whitevintage' },
   ];
 
   return (
@@ -222,28 +229,33 @@ export default function ContactPage() {
               <div className="mt-6 pt-6 border-t border-gray-300">
                 <p className="font-semibold mb-3">Follow us</p>
                 <div className="flex gap-3">
-                  {['facebook', 'twitter', 'instagram', 'youtube'].map((social) => (
-                    <button
-                      key={social}
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.label}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                      aria-label={social.label}
                     >
-                      <span className="sr-only">{social}</span>
-                      {social[0].toUpperCase()}
-                    </button>
+                      <social.icon size={20} />
+                    </a>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* Map */}
-            <div className="h-80 bg-gray-300 rounded-lg overflow-hidden">
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
-                <div className="text-center">
-                  <MapPin size={48} className="mx-auto mb-2" />
-                  <p>Interactive Map</p>
-                  <p className="text-sm">Google Maps Integration</p>
-                </div>
-              </div>
+            {/* Interactive Map */}
+            <div className="h-80 rounded-lg overflow-hidden shadow-md">
+              <iframe
+                src="https://www.google.com/maps?q=6.942114,80.793866&z=16&output=embed"
+                className="w-full h-full"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                title="White Vintage Bungalow Location"
+              />
             </div>
           </div>
         </div>
@@ -276,9 +288,15 @@ export default function ContactPage() {
             <h3 className="text-xl font-heading font-semibold mb-4">Main Office</h3>
             <p className="text-gray-700 mb-2">White Vintage Bungalow</p>
             <p className="text-gray-600 mb-4">78/5 Bakers Park, 18 Dawson Hills, Nuwara Eliya</p>
-            <Button variant="outline" size="md">
-              Get Directions
-            </Button>
+            <a 
+              href="https://www.google.com/maps/search/78%2F5+Bakers+Park,+Dawson+Hills,+Nuwara+Eliya/@6.942114,80.793866,15z" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" size="md">
+                Get Directions
+              </Button>
+            </a>
           </div>
         </div>
       </section>
