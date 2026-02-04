@@ -24,16 +24,16 @@ export const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
-    { icon: Calendar, label: 'Reservation', href: '/reservations' },
-    { icon: Bed, label: 'Rooms', href: '/rooms' },
-    { icon: Users, label: 'Guests', href: '/guests' },
-    { icon: MessageSquare, label: 'Messages', href: '/messages', badge: 3 },
-    { icon: Package, label: 'Housekeeping', href: '/housekeeping' },
-    { icon: CalendarRange, label: 'Calendar', href: '/calendar' },
-    { icon: DollarSign, label: 'Financials', href: '/financials' },
-    { icon: Star, label: 'Reviews', href: '/reviews' },
-    { icon: Settings, label: 'Concierge', href: '/concierge' },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: Calendar, label: 'Reservation', href: '/admin/reservations' },
+    { icon: Bed, label: 'Rooms', href: '/admin/rooms' },
+    { icon: Users, label: 'Guests', href: '/admin/guests' },
+    { icon: MessageSquare, label: 'Messages', href: '/admin/messages', badge: 3 },
+    { icon: Package, label: 'Housekeeping', href: '/admin/housekeeping' },
+    { icon: CalendarRange, label: 'Calendar', href: '/admin/calendar' },
+    { icon: DollarSign, label: 'Financials', href: '/admin/financials' },
+    { icon: Star, label: 'Reviews', href: '/admin/reviews' },
+    { icon: Settings, label: 'Concierge', href: '/admin/concierge' },
   ];
 
   return (
