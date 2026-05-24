@@ -1,0 +1,282 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String?   @unique     // optional — phone-only users may not have email
+  phone             String?   @unique     // for OTP login
+  name              String?
+  password          String?               // null for OAuth/OTP users
+  role              Role      @default(GUEST)
+  avatarUrl         String?
+  country           String?
+  address           String?
+  preferredLanguage String?   @default("en")
+  phoneVerified     Boolean   @default(false)
+  emailVerified     DateTime?
+
+  // Loyalty
+  loyaltyPoints     Int         @default(0)
+  loyaltyTier       LoyaltyTier @default(BRONZE)
+
+  // Relations
+  accounts          Account[]
+  sessions          Session[]
+  bookings          Booking[]
+  reviews           Review[]
+  savedPayments     SavedPayment[]
+  assignedTasks     Task[]        @relation("AssignedTo")
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+enum LoyaltyTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+// NextAuth OAuth table
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  @@unique([identifier, token])
+}
+
+// OTP codes (for phone verification)
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@index([phone])
+}
+
+// Saved Payment Methods
+model SavedPayment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // CARD, HELAPAY, WEBXPAY, BANK
+  label       String   // e.g. "Visa ending in 4242"
+  token       String?  // gateway token (never store raw card details)
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// Guest Checkout (no account needed)
+model GuestCheckout {
+  id        String    @id @default(cuid())
+  email     String
+  firstName String
+  lastName  String
+  phone     String
+  country   String?
+  bookings  Booking[]
+  // If guest later registers, link their bookings
+  claimedByUserId String?
+  createdAt DateTime @default(now())
+}
+
+model Booking {
+  id              String         @id @default(cuid())
+  bookingNumber   String         @unique
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id])
+  guestCheckoutId String?
+  guestCheckout   GuestCheckout? @relation(fields: [guestCheckoutId], references: [id])
+  roomId          String
+  room            Room           @relation(fields: [roomId], references: [id])
+  checkIn         DateTime
+  checkOut        DateTime
+  guests          Int
+  totalAmount     Decimal        @db.Decimal(10, 2)
+  status          BookingStatus  @default(PENDING)
+  paymentStatus   PaymentStatus  @default(PENDING)
+  paymentMethod   String?
+  specialRequests String?
+  pointsEarned    Int            @default(0)
+  
+  // Relations
+  services        ServiceBooking[]
+  payment         Payment?
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// =======================
+// ENUMS
+// =======================
+
+enum Role {
+  GUEST
+  USER
+  ADMIN
+  STAFF
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskCategory {
+  HOUSEKEEPING
+  MAINTENANCE
+  CONFERENCE_SETUP
+  OTHER
+}
+
+// =======================
+// MODELS
+// =======================
+
+model Room {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal   @db.Decimal(10, 2)
+  
+  // Relations
+  bookings    Booking[]
+  reviews     Review[]
+  tasks       Task[]
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  userId    String
+  roomId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  bookingId String        @unique
+  amount    Decimal       @db.Decimal(10, 2)
+  status    PaymentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  priority    Priority     @default(MEDIUM)
+  status      TaskStatus   @default(PENDING)
+  category    TaskCategory
+  assignedTo  String?      // User ID
+  user        User?        @relation("AssignedTo", fields: [assignedTo], references: [id])
+  roomId      String?
+  room        Room?        @relation(fields: [roomId], references: [id])
+  dueAt       DateTime?
+  completedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Service {
+  id          String           @id @default(cuid())
+  name        String
+  description String?
+  price       Decimal          @db.Decimal(10, 2)
+  category    String           // e.g. "Wellness", "Dining"
+  isPackage   Boolean          @default(false)
+  bookings    ServiceBooking[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ServiceBooking {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  quantity    Int      @default(1)
+  totalPrice  Decimal  @db.Decimal(10, 2)
+  scheduledAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  discountPercent Int
+  validFrom       DateTime
+  validUntil      DateTime
+  isActive        Boolean   @default(true)
+  usageCount      Int       @default(0)
+  maxUsage        Int?
+  createdAt       DateTime  @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
