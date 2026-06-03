@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
 import { prisma } from '@/lib/prisma';
 import { sendBankTransferPendingEmail } from '@/lib/email';
 
@@ -50,6 +52,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required booking fields.' }, { status: 400 });
     }
 
+    // Link to logged-in user if a session exists
+    const session = await getServerSession(authOptions);
+    const userId  = session?.user?.id || null;
+
     // Resolve each slug → DB room (deduplicate by room ID to avoid conflicts)
     const resolvedRooms: NonNullable<Awaited<ReturnType<typeof resolveRoom>>>[] = [];
     const seenIds = new Set<string>();
@@ -98,6 +104,7 @@ export async function POST(request: NextRequest) {
           data: {
             bookingNumber:   index === 0 ? baseBookingNumber : `${baseBookingNumber}-R${index + 1}`,
             guestCheckoutId: guestCheckout.id,
+            userId:          userId,
             roomId:          room.id,
             checkIn:         new Date(checkIn),
             checkOut:        new Date(checkOut),
@@ -112,7 +119,7 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Send bank transfer pending email
+    // Send email for bank transfer — includes receipt upload link
     if (paymentMethod === 'bank') {
       const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       sendBankTransferPendingEmail({

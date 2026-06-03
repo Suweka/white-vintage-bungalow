@@ -221,40 +221,80 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {user.bookings.map((booking: any) => (
+                    {user.bookings.map((booking: any) => {
+                      const isBankTransfer  = booking.paymentMethod === 'bank';
+                      const receiptStatus   = booking.bankTransferReceipt?.status;
+                      const receiptUploaded = !!booking.bankTransferReceipt;
+                      return (
                       <div key={booking.id} className="border rounded-lg p-4 hover:shadow-md transition">
-                        <div className="flex justify-between items-start">
-                          <div>
+                        <div className="flex justify-between items-start flex-wrap gap-3">
+                          <div className="flex-1 min-w-0">
                             <p className="font-semibold text-lg">{booking.room?.name || 'Room'}</p>
-                            <p className="text-sm text-gray-500 mb-2">#{booking.bookingNumber}</p>
-                            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                              <span>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</span>
-                              <span>Check-out: {new Date(booking.checkOut).toLocaleDateString()}</span>
+                            <p className="text-sm text-gray-500 mb-2">Ref: <span className="font-mono text-primary">{booking.bookingNumber}</span></p>
+                            <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-3">
+                              <span>Check-in: <strong>{new Date(booking.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong></span>
+                              <span>Check-out: <strong>{new Date(booking.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</strong></span>
                               <span>{booking.guests} guest{booking.guests > 1 ? 's' : ''}</span>
                             </div>
+                            {/* Payment badges */}
+                            <div className="flex flex-wrap gap-2 text-xs">
+                              <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">
+                                {booking.paymentMethod === 'bank' ? 'Bank Transfer'
+                                  : booking.paymentMethod === 'card' ? 'Credit/Debit Card'
+                                  : booking.paymentMethod === 'helapay' ? 'HelaPay'
+                                  : booking.paymentMethod === 'webxpay' ? 'WebXPay'
+                                  : booking.paymentMethod || 'Online'}
+                              </span>
+                              <span className={`px-2 py-1 rounded-full font-medium ${
+                                booking.paymentStatus === 'PAID'    ? 'bg-green-100 text-green-700' :
+                                booking.paymentStatus === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                                'bg-red-100 text-red-700'}`}>
+                                Payment: {booking.paymentStatus === 'PAID' ? 'Paid' : booking.paymentStatus === 'PENDING' ? 'Pending' : 'Failed'}
+                              </span>
+                              {isBankTransfer && receiptUploaded && (
+                                <span className={`px-2 py-1 rounded-full font-medium ${
+                                  receiptStatus === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                                  receiptStatus === 'PENDING'  ? 'bg-orange-100 text-orange-700' :
+                                  'bg-red-100 text-red-700'}`}>
+                                  Receipt: {receiptStatus === 'APPROVED' ? 'Approved' : receiptStatus === 'PENDING' ? 'Under Review' : 'Rejected'}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right flex-shrink-0">
                             <p className="font-bold text-primary text-lg">{formatCurrency(Number(booking.totalAmount))}</p>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' :
-                              booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                              booking.status === 'CHECKED_IN' ? 'bg-blue-100 text-blue-700' :
-                              booking.status === 'CHECKED_OUT' ? 'bg-gray-100 text-gray-700' :
-                              'bg-red-100 text-red-700'
-                            }`}>
-                              {booking.status}
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                              booking.status === 'CONFIRMED'  ? 'bg-green-100 text-green-700' :
+                              booking.status === 'PENDING'    ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-red-100 text-red-700'}`}>
+                              {booking.status === 'CONFIRMED' ? 'Confirmed' : booking.status === 'PENDING' ? 'Pending' : 'Cancelled'}
                             </span>
                           </div>
                         </div>
-                        {booking.status === 'PENDING' && (
-                          <div className="mt-3 pt-3 border-t">
-                            <button className="text-sm text-red-500 hover:underline">
-                              Cancel Booking
-                            </button>
+
+                        {/* Action row */}
+                        {isBankTransfer && booking.status === 'PENDING' && (
+                          <div className="mt-3 pt-3 border-t flex items-center justify-between flex-wrap gap-2">
+                            {!receiptUploaded ? (
+                              <a href={`/booking/upload-receipt?ref=${booking.bookingNumber}`}
+                                 className="text-sm bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition font-medium">
+                                Upload Payment Receipt
+                              </a>
+                            ) : receiptStatus === 'PENDING' ? (
+                              <p className="text-sm text-orange-600 font-medium">Receipt submitted — awaiting admin verification</p>
+                            ) : receiptStatus === 'REJECTED' ? (
+                              <div className="flex items-center gap-3">
+                                <p className="text-sm text-red-600">Receipt rejected. Please re-upload.</p>
+                                <a href={`/booking/upload-receipt?ref=${booking.bookingNumber}`}
+                                   className="text-sm bg-red-100 text-red-700 px-3 py-1 rounded-lg hover:bg-red-200 transition">
+                                  Re-upload
+                                </a>
+                              </div>
+                            ) : null}
                           </div>
                         )}
                       </div>
-                    ))}
+                    )})}
                   </div>
                 )}
               </div>

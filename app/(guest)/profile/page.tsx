@@ -9,7 +9,7 @@ async function getUserData(userId: string) {
     where: { id: userId },
     include: {
       bookings: {
-        include: { room: true, payment: true },
+        include: { room: true, payment: true, bankTransferReceipt: true },
         orderBy: { createdAt: 'desc' },
       },
       savedPayments: true,
