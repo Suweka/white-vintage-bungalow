@@ -1,8 +1,41 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail, Loader2 } from 'lucide-react';
 
 export const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [message, setMessage] = useState('');
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setStatus('success');
+        setMessage(data.message || 'Thank you for subscribing!');
+        setEmail('');
+      } else {
+        setStatus('error');
+        setMessage(data.error || 'Something went wrong.');
+      }
+    } catch (error) {
+      setStatus('error');
+      setMessage('Failed to connect to the server.');
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-white">
       {/* Instagram Gallery Section */}
@@ -100,18 +133,33 @@ export const Footer = () => {
           <div>
             <h4 className="text-lg font-heading font-semibold mb-4">NEWSLETTER</h4>
             <p className="text-gray-400 mb-4">Subscribe to get special offers and updates</p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder="your-email@domain.com"
-                className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <button className="bg-accent text-gray-900 px-4 py-2 rounded-md hover:bg-accent-light transition-colors font-medium">
-                →
-              </button>
-            </div>
+            <form onSubmit={handleSubscribe} className="space-y-3">
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your-email@domain.com"
+                  required
+                  disabled={status === 'loading'}
+                  className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+                />
+                <button 
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="bg-accent text-gray-900 px-4 py-2 rounded-md hover:bg-accent-light transition-colors font-medium disabled:opacity-50"
+                >
+                  {status === 'loading' ? <Loader2 className="animate-spin" size={20} /> : '→'}
+                </button>
+              </div>
+              {message && (
+                <p className={`text-xs ${status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                  {message}
+                </p>
+              )}
+            </form>
             <label className="flex items-center gap-2 mt-3 text-sm text-gray-400">
-              <input type="checkbox" className="rounded" />
+              <input type="checkbox" className="rounded" required />
               I agree to all terms and policies
             </label>
           </div>
