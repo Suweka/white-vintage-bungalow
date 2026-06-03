@@ -1,148 +1,99 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search, Plus, Check, Clock, AlertCircle, User, Calendar } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Plus, Check, User, Calendar, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { getHousekeepingData } from '@/lib/admin-actions';
 
 type TaskStatus = 'pending' | 'in-progress' | 'completed';
 
 interface HousekeepingTask {
   id: string;
-  roomNumber: string;
   roomName: string;
-  taskType: string;
+  title: string;
+  description: string;
   assignedTo: string;
   status: TaskStatus;
   priority: 'low' | 'medium' | 'high';
-  dueDate: string;
-  checklist: { item: string; completed: boolean }[];
+  dueAt: string | null;
 }
 
 export default function HousekeepingPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<TaskStatus | 'all'>('all');
+  const [tasks, setTasks] = useState<HousekeepingTask[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const tasks: HousekeepingTask[] = [
-    {
-      id: 'HK001',
-      roomNumber: '101',
-      roomName: 'Deluxe Room',
-      taskType: 'Full Clean',
-      assignedTo: 'Maria Garcia',
-      status: 'completed',
-      priority: 'high',
-      dueDate: '2025-12-14',
-      checklist: [
-        { item: 'Dust all surfaces', completed: true },
-        { item: 'Vacuum floors', completed: true },
-        { item: 'Clean bathroom', completed: true },
-        { item: 'Change bedsheets', completed: true },
-      ],
-    },
-    {
-      id: 'HK002',
-      roomNumber: '202',
-      roomName: 'Junior Suite',
-      taskType: 'Maintenance Clean',
-      assignedTo: 'John Smith',
-      status: 'in-progress',
-      priority: 'medium',
-      dueDate: '2025-12-14',
-      checklist: [
-        { item: 'Spot clean carpet', completed: true },
-        { item: 'Clean windows', completed: false },
-        { item: 'Replenish toiletries', completed: false },
-      ],
-    },
-    {
-      id: 'HK003',
-      roomNumber: '303',
-      roomName: 'Family Room',
-      taskType: 'Full Clean',
-      assignedTo: 'Rosa Lopez',
-      status: 'pending',
-      priority: 'high',
-      dueDate: '2025-12-14',
-      checklist: [
-        { item: 'Dust all surfaces', completed: false },
-        { item: 'Vacuum floors', completed: false },
-        { item: 'Clean kitchen', completed: false },
-        { item: 'Change bedsheets', completed: false },
-      ],
-    },
-    {
-      id: 'HK004',
-      roomNumber: '104',
-      roomName: 'Deluxe Room',
-      taskType: 'Quick Clean',
-      assignedTo: 'Maria Garcia',
-      status: 'in-progress',
-      priority: 'medium',
-      dueDate: '2025-12-14',
-      checklist: [
-        { item: 'Tidy up room', completed: true },
-        { item: 'Restock amenities', completed: true },
-      ],
-    },
-    {
-      id: 'HK005',
-      roomNumber: '401',
-      roomName: 'Executive Suite',
-      taskType: 'Full Clean',
-      assignedTo: 'John Smith',
-      status: 'pending',
-      priority: 'high',
-      dueDate: '2025-12-15',
-      checklist: [
-        { item: 'Deep clean all areas', completed: false },
-        { item: 'Polish furniture', completed: false },
-        { item: 'Premium toiletries', completed: false },
-      ],
-    },
-  ];
+  async function fetchTasks() {
+    setLoading(true);
+    setError(false);
+    const data = await getHousekeepingData();
+    if (data) {
+      setTasks(data);
+    } else {
+      setError(true);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => { fetchTasks(); }, []);
 
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
-      task.roomNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
       task.roomName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       task.assignedTo.toLowerCase().includes(searchQuery.toLowerCase());
-
     const matchesFilter = filterStatus === 'all' || task.status === filterStatus;
-
     return matchesSearch && matchesFilter;
   });
 
   const getStatusColor = (status: TaskStatus) => {
     switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-700';
-      case 'in-progress':
-        return 'bg-blue-100 text-blue-700';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
+      case 'completed':  return 'bg-green-100 text-green-700';
+      case 'in-progress': return 'bg-blue-100 text-blue-700';
+      case 'pending':    return 'bg-yellow-100 text-yellow-700';
+      default:           return 'bg-gray-100 text-gray-700';
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high':
-        return 'text-red-600';
-      case 'medium':
-        return 'text-yellow-600';
-      case 'low':
-        return 'text-green-600';
-      default:
-        return 'text-gray-600';
+      case 'high':   return 'text-red-600';
+      case 'medium': return 'text-yellow-600';
+      case 'low':    return 'text-green-600';
+      default:       return 'text-gray-600';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin text-primary" size={48} />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <AlertCircle className="text-red-500" size={40} />
+        <p className="text-gray-600">Failed to load housekeeping tasks.</p>
+        <button onClick={fetchTasks} className="px-4 py-2 bg-primary text-white rounded-lg">Retry</button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold mb-2">Housekeeping</h1>
-        <p className="text-gray-600">Manage cleaning tasks and staff assignments</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-heading font-bold mb-2">Housekeeping</h1>
+          <p className="text-gray-600">Manage cleaning tasks and staff assignments</p>
+        </div>
+        <button onClick={fetchTasks} className="text-sm flex items-center gap-1 text-gray-500 hover:text-primary">
+          <RefreshCw size={14} /> Refresh
+        </button>
       </div>
 
       {/* Controls */}
@@ -158,7 +109,6 @@ export default function HousekeepingPage() {
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </div>
-
           <div className="flex gap-2">
             <select
               value={filterStatus}
@@ -170,7 +120,6 @@ export default function HousekeepingPage() {
               <option value="in-progress">In Progress</option>
               <option value="completed">Completed</option>
             </select>
-
             <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center gap-2">
               <Plus size={20} />
               <span className="hidden sm:inline">New Task</span>
@@ -180,26 +129,33 @@ export default function HousekeepingPage() {
       </div>
 
       {/* Tasks List */}
-      <div className="space-y-4">
-        {filteredTasks.map((task) => {
-          const completedItems = task.checklist.filter(item => item.completed).length;
-          const totalItems = task.checklist.length;
-          const progress = (completedItems / totalItems) * 100;
-
-          return (
+      {filteredTasks.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-lg shadow-md">
+          <p className="text-gray-500">
+            {tasks.length === 0
+              ? 'No housekeeping tasks yet. Tasks assigned via the Task Management system will appear here.'
+              : 'No tasks match your search.'}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {filteredTasks.map((task) => (
             <div key={task.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold">Room #{task.roomNumber} - {task.roomName}</h3>
+                    <h3 className="text-lg font-semibold">{task.roomName}</h3>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                      {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                      {task.status === 'in-progress' ? 'In Progress' : task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600">{task.taskType}</p>
+                  <p className="text-sm text-gray-700 font-medium">{task.title}</p>
+                  {task.description && (
+                    <p className="text-sm text-gray-500 mt-1">{task.description}</p>
+                  )}
                 </div>
-                <div className={`text-lg font-bold ${getPriorityColor(task.priority)}`}>
-                  {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                <div className={`text-sm font-bold ${getPriorityColor(task.priority)}`}>
+                  {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
                 </div>
               </div>
 
@@ -209,44 +165,12 @@ export default function HousekeepingPage() {
                   <User size={16} className="text-gray-400" />
                   <span className="text-gray-700">{task.assignedTo}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Calendar size={16} className="text-gray-400" />
-                  <span className="text-gray-700">{new Date(task.dueDate).toLocaleDateString()}</span>
-                </div>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-gray-700">Task Progress</p>
-                  <span className="text-sm font-semibold text-primary">{completedItems}/{totalItems}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Checklist */}
-              <div className="mb-4">
-                <p className="text-sm font-medium text-gray-700 mb-3">Checklist</p>
-                <div className="space-y-2">
-                  {task.checklist.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={item.completed}
-                        className="w-4 h-4 rounded border-gray-300"
-                        readOnly
-                      />
-                      <span className={`text-sm ${item.completed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                        {item.item}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                {task.dueAt && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Calendar size={16} className="text-gray-400" />
+                    <span className="text-gray-700">{new Date(task.dueAt).toLocaleDateString()}</span>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
@@ -262,13 +186,7 @@ export default function HousekeepingPage() {
                 </button>
               </div>
             </div>
-          );
-        })}
-      </div>
-
-      {filteredTasks.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No tasks found</p>
+          ))}
         </div>
       )}
 
