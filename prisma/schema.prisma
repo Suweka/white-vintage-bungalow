@@ -134,11 +134,27 @@ model Booking {
   pointsEarned    Int            @default(0)
   
   // Relations
-  services        ServiceBooking[]
-  payment         Payment?
+  services            ServiceBooking[]
+  payment             Payment?
+  bankTransferReceipt BankTransferReceipt?
 
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+}
+
+model BankTransferReceipt {
+  id             String        @id @default(cuid())
+  bookingId      String        @unique
+  booking        Booking       @relation(fields: [bookingId], references: [id])
+  transactionRef String?
+  transferDate   DateTime?
+  amountPaid     Decimal?      @db.Decimal(10, 2)
+  receiptUrl     String?
+  notes          String?
+  status         ReceiptStatus @default(PENDING)
+  reviewedAt     DateTime?
+  reviewedBy     String?
+  createdAt      DateTime      @default(now())
 }
 
 // =======================
@@ -181,6 +197,12 @@ enum TaskCategory {
   MAINTENANCE
   CONFERENCE_SETUP
   OTHER
+}
+
+enum ReceiptStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // =======================

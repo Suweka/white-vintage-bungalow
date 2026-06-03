@@ -145,9 +145,10 @@ export async function getReservationsData() {
     const bookings = await prisma.booking.findMany({
       orderBy: { createdAt: 'desc' },
       include: {
-        room: true,
-        user: true,
-        guestCheckout: true,
+        room:               true,
+        user:               true,
+        guestCheckout:      true,
+        bankTransferReceipt: true,
       },
     });
 
@@ -159,6 +160,7 @@ export async function getReservationsData() {
         || (b.guestCheckout ? `${b.guestCheckout.firstName} ${b.guestCheckout.lastName}` : 'Unknown');
       const email = b.user?.email || b.guestCheckout?.email || '';
       const phone = b.user?.phone || b.guestCheckout?.phone || '';
+      const r = b.bankTransferReceipt;
 
       return {
         id: b.bookingNumber,
@@ -172,6 +174,16 @@ export async function getReservationsData() {
         amount: Number(b.totalAmount),
         status: b.status.toLowerCase() as 'confirmed' | 'pending' | 'cancelled',
         guests: b.guests,
+        paymentMethod: b.paymentMethod || null,
+        receipt: r ? {
+          id:             r.id,
+          transactionRef: r.transactionRef,
+          transferDate:   r.transferDate?.toISOString().split('T')[0] ?? null,
+          amountPaid:     r.amountPaid ? Number(r.amountPaid) : null,
+          receiptUrl:     r.receiptUrl,
+          notes:          r.notes,
+          status:         r.status,
+        } : null,
       };
     });
   } catch (error) {

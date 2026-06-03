@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendBankTransferPendingEmail } from '@/lib/email';
 
 const SLUG_TO_NAME: Record<string, string> = {
   'deluxe-room':   'Deluxe Room',
@@ -110,6 +111,20 @@ export async function POST(request: NextRequest) {
         });
       })
     );
+
+    // Send bank transfer pending email
+    if (paymentMethod === 'bank') {
+      const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      sendBankTransferPendingEmail({
+        to:            guestDetails.email,
+        guestName:     `${guestDetails.firstName} ${guestDetails.lastName}`,
+        bookingNumber: baseBookingNumber,
+        rooms:         resolvedRooms.map(r => r.name).join(', '),
+        checkIn:       fmtDate(checkIn),
+        checkOut:      fmtDate(checkOut),
+        totalAmount:   Number(totalAmount),
+      }).catch(err => console.error('[email] bank transfer email failed:', err));
+    }
 
     return NextResponse.json({
       success:       true,
