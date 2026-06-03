@@ -30,15 +30,15 @@ function formatCurrency(amount: number) {
 interface ProfileClientProps {
   user: {
     id: string;
-    name: string;
-    email: string;
-    phone?: string;
-    country?: string;
-    address?: string;
-    avatarUrl?: string;
+    name: string | null;
+    email: string | null;
+    phone?: string | null;
+    country?: string | null;
+    address?: string | null;
+    avatarUrl?: string | null;
     loyaltyPoints: number;
     loyaltyTier: 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM';
-    preferredLanguage?: string;
+    preferredLanguage?: string | null;
     bookings: any[];
     savedPayments: any[];
     reviews?: any[];
@@ -91,7 +91,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
-                    alt={user.name}
+                    alt={user.name || ''}
                     className="w-24 h-24 rounded-full object-cover mx-auto"
                   />
                 ) : (
@@ -382,7 +382,7 @@ export default function ProfileClient({ user }: ProfileClientProps) {
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         type="email"
-                        value={user.email}
+                        value={user.email || ''}
                         disabled
                         className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
                       />
