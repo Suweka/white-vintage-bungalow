@@ -1,6 +1,6 @@
 'use client';
 
-import { AdminSidebar } from '@/components/admin/sidebar';
+import { AdminSidebar } from '@/components/admin/Sidebar';
 import { Bell, Search, Settings, LogOut } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
