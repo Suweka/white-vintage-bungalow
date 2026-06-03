@@ -169,10 +169,11 @@ export const Footer = () => {
       {/* Bottom Bar */}
       <div className="border-t border-gray-800">
         <div className="container mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
-          <p>© Copyright 2025 White Vintage Bungalow. All Rights Reserved</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="/terms" className="hover:text-accent transition-colors">Terms and Conditions</Link>
+          <p>© Copyright 2026 White Vintage Bungalow. All Rights Reserved</p>
+          <div className="flex flex-wrap gap-6 mt-4 md:mt-0">
+            <Link href="/terms" className="hover:text-accent transition-colors">Terms &amp; Conditions</Link>
             <Link href="/privacy" className="hover:text-accent transition-colors">Privacy Policy</Link>
+            <Link href="/refund-policy" className="hover:text-accent transition-colors">Refund Policy</Link>
           </div>
         </div>
       </div>

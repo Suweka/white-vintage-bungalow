@@ -5,7 +5,7 @@ export default function TermsPage() {
       <section className="bg-gradient-to-r from-primary to-primary-dark text-white py-16 px-4">
         <div className="container mx-auto">
           <h1 className="text-4xl font-heading font-bold mb-2">Terms and Conditions</h1>
-          <p className="text-gray-200">Last updated: December 6, 2025</p>
+          <p className="text-gray-200">Last updated: June 2026</p>
         </div>
       </section>
 
@@ -89,9 +89,18 @@ export default function TermsPage() {
 
             <h3 className="text-xl font-heading font-semibold mt-8 mb-4">9. Booking and Payment Terms</h3>
             <p className="text-gray-700 mb-4">
-              All bookings require a 30% deposit at the time of reservation. Full payment is due upon 
-              check-in or as specified in your booking confirmation. Cancellations made more than 24 
-              hours before check-in are eligible for a full refund of the deposit.
+              All bookings require a deposit or full payment at the time of reservation as specified during
+              checkout. Full payment is due upon check-in or as stated in your booking confirmation.
+            </p>
+            <p className="text-gray-700 mb-4">
+              Online payments are processed securely by <strong>PayHere</strong> (payhere.lk), a licensed
+              payment gateway regulated in Sri Lanka. We do not store, access, or process your card or
+              banking details directly — all financial data is handled by PayHere in accordance with
+              PCI-DSS standards. By making an online payment, you also agree to PayHere's terms of service.
+            </p>
+            <p className="text-gray-700 mb-4">
+              Cancellations made more than 24 hours before check-in are eligible for a full refund.
+              Please refer to our <a href="/refund-policy" className="text-primary hover:underline">Refund Policy</a> for complete details on cancellations and refund timelines.
             </p>
 
             <h3 className="text-xl font-heading font-semibold mt-8 mb-4">10. Guest Conduct</h3>

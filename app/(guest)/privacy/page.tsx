@@ -5,7 +5,7 @@ export default function PrivacyPage() {
       <section className="bg-gradient-to-r from-primary to-primary-dark text-white py-16 px-4">
         <div className="container mx-auto">
           <h1 className="text-4xl font-heading font-bold mb-2">Privacy Policy</h1>
-          <p className="text-gray-200">Last updated: December 6, 2025</p>
+          <p className="text-gray-200">Last updated: June 2026</p>
         </div>
       </section>
 
@@ -87,16 +87,31 @@ export default function PrivacyPage() {
             </p>
 
             <h3 className="text-xl font-heading font-semibold mt-8 mb-4">
-              7. Third Party Privacy Policies
+              7. Payment Processing — PayHere
             </h3>
             <p className="text-gray-700 mb-4">
-              Our Privacy Policy does not apply to other advertisers or websites. We advise you to 
-              consult the respective Privacy Policies of these third-party ad servers for more detailed 
-              information, including their practices and instructions about how to opt-out of certain options.
+              Online payments on our website are processed by <strong>PayHere</strong> (payhere.lk), a
+              Sri Lanka-based licensed payment service provider. When you make a payment, you are redirected
+              to PayHere's secure hosted checkout page. We do not receive, store, or process your credit/debit
+              card numbers or bank account details.
+            </p>
+            <p className="text-gray-700 mb-4">
+              PayHere collects and processes your payment information in accordance with their own Privacy
+              Policy and PCI-DSS security standards. We share only the minimum information required to
+              process your booking (such as your name, email, phone number, booking reference, and amount)
+              with PayHere to facilitate the transaction.
             </p>
 
             <h3 className="text-xl font-heading font-semibold mt-8 mb-4">
-              8. CCPA Privacy Rights (Do Not Sell My Personal Information)
+              8. Third Party Privacy Policies
+            </h3>
+            <p className="text-gray-700 mb-4">
+              Our Privacy Policy does not apply to other third-party websites or service providers. We advise
+              you to consult the respective privacy policies of these providers for more detailed information.
+            </p>
+
+            <h3 className="text-xl font-heading font-semibold mt-8 mb-4">
+              9. Your Privacy Rights
             </h3>
             <p className="text-gray-700 mb-4">
               Under the CCPA, among other rights, consumers have the right to:
