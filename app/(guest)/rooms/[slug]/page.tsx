@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
+import { DatePickerField } from '@/components/ui/DatePickerField';
 import { formatCurrency } from '@/lib/utils';
 import {
   Users,
@@ -16,6 +17,8 @@ import {
   X,
   Check,
   Calendar,
+  Minus,
+  Plus,
 } from 'lucide-react';
 
 interface RoomInfo {
@@ -135,8 +138,8 @@ export default function RoomDetailsPage({ params: { slug } }: { params: { slug: 
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
-  const [checkIn, setCheckIn] = useState('');
-  const [checkOut, setCheckOut] = useState('');
+  const [checkIn, setCheckIn] = useState<Date | null>(null);
+  const [checkOut, setCheckOut] = useState<Date | null>(null);
   const [guests, setGuests] = useState(Math.min(2, roomInfo.maxGuests));
 
   const images = [roomInfo.image, roomInfo.image, roomInfo.image, roomInfo.image];
@@ -146,10 +149,13 @@ export default function RoomDetailsPage({ params: { slug } }: { params: { slug: 
 
   const averageRating = SHARED_REVIEWS.reduce((acc, r) => acc + r.rating, 0) / SHARED_REVIEWS.length;
 
+  const toISO = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
   const handleBookNow = () => {
     const params = new URLSearchParams({ room: slug, guests: guests.toString() });
-    if (checkIn) params.set('checkIn', checkIn);
-    if (checkOut) params.set('checkOut', checkOut);
+    if (checkIn)  params.set('checkIn',  toISO(checkIn));
+    if (checkOut) params.set('checkOut', toISO(checkOut));
     router.push(`/booking?${params.toString()}`);
   };
 
@@ -346,39 +352,53 @@ export default function RoomDetailsPage({ params: { slug } }: { params: { slug: 
               </div>
 
               <div className="space-y-4 mb-6">
+                {(() => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  const checkOutMin = checkIn
+                    ? new Date(checkIn.getTime() + 86_400_000)
+                    : new Date(today.getTime() + 86_400_000);
+                  return (
+                    <>
+                      <DatePickerField
+                        label="Check-in"
+                        value={checkIn}
+                        minDate={today}
+                        onChange={d => { setCheckIn(d); if (checkOut && d >= checkOut) setCheckOut(null); }}
+                      />
+                      <DatePickerField
+                        label="Check-out"
+                        value={checkOut}
+                        minDate={checkOutMin}
+                        onChange={d => setCheckOut(d)}
+                      />
+                    </>
+                  );
+                })()}
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Check-in</label>
-                  <input
-                    type="date"
-                    value={checkIn}
-                    min={new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Check-out</label>
-                  <input
-                    type="date"
-                    value={checkOut}
-                    min={checkIn || new Date().toISOString().split('T')[0]}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Guests</label>
-                  <select
-                    value={guests}
-                    onChange={(e) => setGuests(parseInt(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
-                  >
-                    {[...Array(roomInfo.maxGuests)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1} Guest{i > 0 ? 's' : ''}
-                      </option>
-                    ))}
-                  </select>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Guests</label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setGuests(g => Math.max(1, g - 1))}
+                      disabled={guests <= 1}
+                      className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-primary hover:bg-primary-light transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <Minus size={15} />
+                    </button>
+                    <span className="font-semibold text-gray-900 min-w-[80px] text-center">
+                      {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setGuests(g => Math.min(roomInfo.maxGuests, g + 1))}
+                      disabled={guests >= roomInfo.maxGuests}
+                      className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-primary hover:bg-primary-light transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <Plus size={15} />
+                    </button>
+                  </div>
                 </div>
               </div>
 

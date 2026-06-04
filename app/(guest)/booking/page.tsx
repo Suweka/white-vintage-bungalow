@@ -17,6 +17,8 @@ import {
   Tag,
   Loader2,
   ExternalLink,
+  Minus,
+  Plus,
 } from 'lucide-react';
 
 type BookingStep = 'dates' | 'details' | 'payment' | 'confirmation';
@@ -460,22 +462,30 @@ function BookingPageContent() {
 
                 {/* Number of Guests */}
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
                     Number of Guests
                     <span className="ml-2 text-xs text-gray-400 font-normal">(max {totalMaxGuests} across selected rooms)</span>
                   </label>
-                  <div className="select-wrapper">
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(parseInt(e.target.value))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-base bg-white"
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setGuests(g => Math.max(1, g - 1))}
+                      disabled={guests <= 1}
+                      className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-primary hover:bg-primary-light transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                     >
-                      {[...Array(totalMaxGuests)].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1} Guest{i > 0 ? 's' : ''}
-                        </option>
-                      ))}
-                    </select>
+                      <Minus size={16} />
+                    </button>
+                    <span className="text-lg font-semibold text-gray-900 min-w-[100px] text-center">
+                      {guests} {guests === 1 ? 'Guest' : 'Guests'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setGuests(g => Math.min(totalMaxGuests, g + 1))}
+                      disabled={guests >= totalMaxGuests}
+                      className="w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-primary hover:bg-primary-light transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <Plus size={16} />
+                    </button>
                   </div>
                 </div>
 
