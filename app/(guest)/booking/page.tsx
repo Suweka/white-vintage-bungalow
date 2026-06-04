@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { formatCurrency } from '@/lib/utils';
@@ -114,6 +114,24 @@ function BookingPageContent() {
   const [submitError, setSubmitError] = useState('');
   const [bookingReference, setBookingReference] = useState('');
 
+  const [unavailableDates, setUnavailableDates] = useState<Set<string>>(new Set());
+  const [availabilityLoading, setAvailabilityLoading] = useState(false);
+
+  // Returns a YYYY-MM-DD key from a local Date (avoids UTC shift)
+  const toKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+  // True if any date strictly between `from` and `to` (exclusive) is unavailable
+  const rangeHasUnavailable = (from: Date, to: Date) => {
+    const cur = new Date(from);
+    cur.setDate(cur.getDate() + 1);
+    while (cur < to) {
+      if (unavailableDates.has(toKey(cur))) return true;
+      cur.setDate(cur.getDate() + 1);
+    }
+    return false;
+  };
+
   const selectedRoomObjects = ROOMS.filter(r => selectedRooms.includes(r.id));
   const totalMaxGuests = selectedRoomObjects.reduce((sum, r) => sum + r.maxGuests, 0) || 1;
   const totalNightlyRate = selectedRoomObjects.reduce((sum, r) => sum + r.price, 0);
@@ -185,12 +203,24 @@ function BookingPageContent() {
   const days = getDaysInMonth(currentMonth);
 
   const handleDateClick = (date: Date) => {
+    if (unavailableDates.has(toKey(date))) return; // booked — ignore click
+
     if (!checkInDate || (checkInDate && checkOutDate)) {
       setCheckInDate(date);
       setCheckOutDate(null);
     } else if (checkInDate && !checkOutDate) {
-      if (date > checkInDate) setCheckOutDate(date);
-      else { setCheckInDate(date); setCheckOutDate(null); }
+      if (date > checkInDate) {
+        if (rangeHasUnavailable(checkInDate, date)) {
+          // Range crosses a booked date — restart from clicked date
+          setCheckInDate(date);
+          setCheckOutDate(null);
+        } else {
+          setCheckOutDate(date);
+        }
+      } else {
+        setCheckInDate(date);
+        setCheckOutDate(null);
+      }
     }
   };
 
@@ -208,6 +238,38 @@ function BookingPageContent() {
     if (!date) return '';
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
+
+  // Fetch unavailable dates whenever the room selection changes
+  useEffect(() => {
+    let cancelled = false;
+    setAvailabilityLoading(true);
+    fetch('/api/rooms/availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomSlugs: selectedRooms }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (!cancelled) {
+          setUnavailableDates(new Set<string>(data.unavailableDates || []));
+          setAvailabilityLoading(false);
+        }
+      })
+      .catch(() => { if (!cancelled) setAvailabilityLoading(false); });
+    return () => { cancelled = true; };
+  }, [selectedRooms.join(',')]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Clear selected dates when they fall inside newly unavailable ranges
+  useEffect(() => {
+    if (checkInDate && unavailableDates.has(toKey(checkInDate))) {
+      setCheckInDate(null);
+      setCheckOutDate(null);
+      return;
+    }
+    if (checkInDate && checkOutDate && rangeHasUnavailable(checkInDate, checkOutDate)) {
+      setCheckOutDate(null);
+    }
+  }, [unavailableDates]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const nextMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
   const prevMonth = () => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
@@ -437,31 +499,49 @@ function BookingPageContent() {
                     ))}
                   </div>
 
+                  {availabilityLoading && (
+                    <div className="flex items-center gap-2 mb-2 text-xs text-gray-400">
+                      <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                      </svg>
+                      Checking availability…
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                     {days.map((date, index) => {
                       if (!date) return <div key={`empty-${index}`} className="aspect-square" />;
                       const isSelected = isDateSelected(date);
                       const inRange = isDateInRange(date);
                       const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+                      const isBooked = !isPast && unavailableDates.has(toKey(date));
+                      const isBlocked = isPast || isBooked;
                       return (
                         <button
                           key={date.toISOString()}
-                          onClick={() => !isPast && handleDateClick(date)}
-                          disabled={isPast}
+                          onClick={() => !isBlocked && handleDateClick(date)}
+                          disabled={isBlocked}
+                          title={isBooked ? 'Already booked' : undefined}
                           className={`
-                            aspect-square flex items-center justify-center rounded-md sm:rounded-lg text-xs sm:text-sm transition-colors
-                            ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-gray-100 cursor-pointer'}
+                            aspect-square flex items-center justify-center rounded-md sm:rounded-lg text-xs sm:text-sm transition-colors relative
+                            ${isPast  ? 'text-gray-300 cursor-not-allowed' : ''}
+                            ${isBooked ? 'bg-red-50 text-red-400 cursor-not-allowed' : ''}
+                            ${!isBlocked && !isSelected && !inRange ? 'hover:bg-gray-100 cursor-pointer text-gray-700' : ''}
                             ${isSelected ? 'bg-primary text-white hover:bg-primary/90 font-semibold' : ''}
                             ${inRange ? 'bg-primary-light text-primary' : ''}
                           `}
                         >
                           {date.getDate()}
+                          {isBooked && (
+                            <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-red-400 rounded-full" />
+                          )}
                         </button>
                       );
                     })}
                   </div>
 
-                  <div className="flex items-center gap-4 mt-4 text-xs">
+                  <div className="flex flex-wrap items-center gap-3 mt-4 text-xs">
                     <div className="flex items-center gap-1">
                       <div className="w-3 h-3 bg-primary rounded" /><span className="text-gray-600">Selected</span>
                     </div>
@@ -469,7 +549,10 @@ function BookingPageContent() {
                       <div className="w-3 h-3 bg-primary-light rounded" /><span className="text-gray-600">In Range</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 bg-gray-200 rounded" /><span className="text-gray-600">Unavailable</span>
+                      <div className="w-3 h-3 bg-red-50 border border-red-200 rounded" /><span className="text-gray-600">Booked</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 bg-gray-100 rounded" /><span className="text-gray-600">Past</span>
                     </div>
                   </div>
 
