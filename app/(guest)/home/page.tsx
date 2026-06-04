@@ -1,29 +1,23 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { RoomCard } from '@/components/guest/RoomCard';
-import { 
-  Wifi, 
-  Coffee, 
-  Waves, 
-  Dumbbell, 
-  Car, 
+import { QuickBookingWidget } from '@/components/guest/QuickBookingWidget';
+import {
+  Wifi,
+  Coffee,
+  Waves,
+  Dumbbell,
+  Car,
   UtensilsCrossed,
   Star,
   MapPin,
   Calendar,
-  AlertCircle
 } from 'lucide-react';
 
 export default function HomePage() {
-  const router = useRouter();
-  const [checkInDate, setCheckInDate] = useState('');
-  const [checkOutDate, setCheckOutDate] = useState('');
-  const [guests, setGuests] = useState('2');
-  const [error, setError] = useState('');
 
   // Mock data - replace with API calls
   const rooms = [
@@ -82,46 +76,6 @@ export default function HomePage() {
     },
   ];
 
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-  };
-
-  // Validate dates
-  const validateDates = () => {
-    setError('');
-
-    if (!checkInDate || !checkOutDate) {
-      setError('Please select both check-in and check-out dates');
-      return false;
-    }
-
-    const checkIn = new Date(checkInDate);
-    const checkOut = new Date(checkOutDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (checkIn < today) {
-      setError('Check-in date cannot be in the past');
-      return false;
-    }
-
-    if (checkOut <= checkIn) {
-      setError('Check-out date must be after check-in date');
-      return false;
-    }
-
-    return true;
-  };
-
-  // Handle check availability
-  const handleCheckAvailability = () => {
-    if (validateDates()) {
-      router.push(`/booking?checkIn=${checkInDate}&checkOut=${checkOutDate}&guests=${guests}`);
-    }
-  };
-
   return (
     <div>
       {/* Hero Section */}
@@ -162,63 +116,7 @@ export default function HomePage() {
 
       {/* Quick Booking Section */}
       <section className="bg-white shadow-lg -mt-16 relative z-20 max-w-6xl mx-auto rounded-lg overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x">
-          <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block font-medium">Check In</label>
-            <input
-              type="date"
-              value={checkInDate}
-              onChange={(e) => {
-                setCheckInDate(e.target.value);
-                setError('');
-              }}
-              min={getTodayDate()}
-              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
-            />
-          </div>
-          <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block font-medium">Check Out</label>
-            <input
-              type="date"
-              value={checkOutDate}
-              onChange={(e) => {
-                setCheckOutDate(e.target.value);
-                setError('');
-              }}
-              min={checkInDate || getTodayDate()}
-              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
-            />
-          </div>
-          <div className="p-6">
-            <label className="text-sm text-gray-600 mb-2 block font-medium">Guests</label>
-            <select 
-              value={guests}
-              onChange={(e) => setGuests(e.target.value)}
-              className="w-full font-medium text-gray-900 bg-transparent focus:outline-none cursor-pointer"
-            >
-              <option value="1">1 Guest</option>
-              <option value="2">2 Guests</option>
-              <option value="3">3 Guests</option>
-              <option value="4">4 Guests</option>
-            </select>
-          </div>
-          <div className="p-6 flex items-center">
-            <Button 
-              variant="primary" 
-              size="lg" 
-              className="w-full"
-              onClick={handleCheckAvailability}
-            >
-              Check Availability
-            </Button>
-          </div>
-        </div>
-        {error && (
-          <div className="px-6 py-3 bg-red-50 border-t border-red-200 flex items-start gap-3">
-            <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={18} />
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
+        <QuickBookingWidget />
       </section>
 
       {/* About Section */}
