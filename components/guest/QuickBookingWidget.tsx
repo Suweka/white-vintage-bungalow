@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CalendarDays, Users, ChevronLeft, ChevronRight, Minus, Plus, AlertCircle } from 'lucide-react';
+import { CalendarDays, Users, ChevronLeft, ChevronRight, ChevronDown, Minus, Plus, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 // ── Mini calendar popover ──────────────────────────────────────────────────────
@@ -180,42 +180,52 @@ export function QuickBookingWidget() {
       <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x">
 
         {/* Check In */}
-        <div className="p-6 relative">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            <CalendarDays size={13} className="text-primary" />
+        <div className="p-5 relative">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Check In
           </p>
           <button
             onClick={() => toggle('checkIn')}
-            className="w-full text-left focus:outline-none"
+            className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg border-2 transition-colors text-left focus:outline-none ${
+              openPicker === 'checkIn'
+                ? 'border-primary bg-primary-light'
+                : 'border-gray-200 hover:border-primary bg-white'
+            }`}
           >
-            <span className={`text-base font-semibold ${checkIn ? 'text-gray-900' : 'text-gray-400'}`}>
+            <CalendarDays size={16} className="text-primary flex-shrink-0" />
+            <span className={`flex-1 text-sm font-semibold ${checkIn ? 'text-gray-900' : 'text-gray-400'}`}>
               {fmtDate(checkIn) ?? 'Select date'}
             </span>
+            <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${openPicker === 'checkIn' ? 'rotate-180' : ''}`} />
           </button>
           {openPicker === 'checkIn' && (
-            <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 animate-fadeIn">
+            <div className="absolute top-full left-0 mt-1 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 animate-fadeIn">
               <MiniCalendar selected={checkIn} minDate={today} onSelect={handleCheckIn} />
             </div>
           )}
         </div>
 
         {/* Check Out */}
-        <div className="p-6 relative">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            <CalendarDays size={13} className="text-primary" />
+        <div className="p-5 relative">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Check Out
           </p>
           <button
             onClick={() => toggle('checkOut')}
-            className="w-full text-left focus:outline-none"
+            className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-lg border-2 transition-colors text-left focus:outline-none ${
+              openPicker === 'checkOut'
+                ? 'border-primary bg-primary-light'
+                : 'border-gray-200 hover:border-primary bg-white'
+            }`}
           >
-            <span className={`text-base font-semibold ${checkOut ? 'text-gray-900' : 'text-gray-400'}`}>
+            <CalendarDays size={16} className="text-primary flex-shrink-0" />
+            <span className={`flex-1 text-sm font-semibold ${checkOut ? 'text-gray-900' : 'text-gray-400'}`}>
               {fmtDate(checkOut) ?? 'Select date'}
             </span>
+            <ChevronDown size={14} className={`text-gray-400 flex-shrink-0 transition-transform ${openPicker === 'checkOut' ? 'rotate-180' : ''}`} />
           </button>
           {openPicker === 'checkOut' && (
-            <div className="absolute top-full left-0 mt-2 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 animate-fadeIn">
+            <div className="absolute top-full left-0 mt-1 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 animate-fadeIn">
               <MiniCalendar selected={checkOut} minDate={checkOutMin} onSelect={handleCheckOut} />
             </div>
           )}

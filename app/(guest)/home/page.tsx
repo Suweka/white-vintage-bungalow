@@ -115,7 +115,7 @@ export default function HomePage() {
       </section>
 
       {/* Quick Booking Section */}
-      <section className="bg-white shadow-lg -mt-16 relative z-20 max-w-6xl mx-auto rounded-lg overflow-hidden">
+      <section className="bg-white shadow-lg -mt-16 relative z-20 max-w-6xl mx-auto rounded-xl border border-gray-100">
         <QuickBookingWidget />
       </section>
 
