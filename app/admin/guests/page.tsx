@@ -93,15 +93,17 @@ export default function GuestsPage() {
             />
           </div>
           <div className="flex gap-2">
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value as 'all' | 'registered' | 'guest')}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="all">All Guests</option>
-              <option value="registered">Registered Users</option>
-              <option value="guest">Guest Checkout</option>
-            </select>
+            <div className="select-wrapper flex-1">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value as 'all' | 'registered' | 'guest')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+              >
+                <option value="all">All Guests</option>
+                <option value="registered">Registered Users</option>
+                <option value="guest">Guest Checkout</option>
+              </select>
+            </div>
             <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center gap-2">
               <Plus size={20} />
               <span className="hidden sm:inline">Add Guest</span>

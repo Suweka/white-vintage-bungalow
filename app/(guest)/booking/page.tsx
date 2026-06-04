@@ -333,7 +333,7 @@ function BookingPageContent() {
           <div className="lg:col-span-2">
             {/* Step 1: Select Dates */}
             {currentStep === 'dates' && (
-              <div className="bg-white rounded-lg shadow-md p-8">
+              <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
                 <h2 className="text-2xl font-heading font-bold mb-6">Select Your Dates</h2>
 
                 {/* Room Selection */}
@@ -402,40 +402,42 @@ function BookingPageContent() {
                     Number of Guests
                     <span className="ml-2 text-xs text-gray-400 font-normal">(max {totalMaxGuests} across selected rooms)</span>
                   </label>
-                  <select
-                    value={guests}
-                    onChange={(e) => setGuests(parseInt(e.target.value))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-base"
-                  >
-                    {[...Array(totalMaxGuests)].map((_, i) => (
-                      <option key={i + 1} value={i + 1}>
-                        {i + 1} Guest{i > 0 ? 's' : ''}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="select-wrapper">
+                    <select
+                      value={guests}
+                      onChange={(e) => setGuests(parseInt(e.target.value))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-base bg-white"
+                    >
+                      {[...Array(totalMaxGuests)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1} Guest{i > 0 ? 's' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 {/* Calendar */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg">
-                      <ChevronLeft className="w-5 h-5" />
+                <div className="border border-gray-200 rounded-lg p-3 sm:p-4">
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                      <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
-                    <h3 className="text-lg font-semibold">
+                    <h3 className="text-base sm:text-lg font-semibold">
                       {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                     </h3>
-                    <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg">
-                      <ChevronRight className="w-5 h-5" />
+                    <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-7 gap-1 mb-2">
+                  <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
                     {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
-                      <div key={day} className="text-center text-sm font-medium text-gray-600 py-2">{day}</div>
+                      <div key={day} className="text-center text-xs sm:text-sm font-medium text-gray-500 py-1 sm:py-2">{day}</div>
                     ))}
                   </div>
 
-                  <div className="grid grid-cols-7 gap-1">
+                  <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
                     {days.map((date, index) => {
                       if (!date) return <div key={`empty-${index}`} className="aspect-square" />;
                       const isSelected = isDateSelected(date);
@@ -447,10 +449,10 @@ function BookingPageContent() {
                           onClick={() => !isPast && handleDateClick(date)}
                           disabled={isPast}
                           className={`
-                            aspect-square flex items-center justify-center rounded-lg text-sm
-                            ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-gray-100'}
-                            ${isSelected ? 'bg-primary text-white hover:bg-primary/90' : ''}
-                            ${inRange ? 'bg-primary-light' : ''}
+                            aspect-square flex items-center justify-center rounded-md sm:rounded-lg text-xs sm:text-sm transition-colors
+                            ${isPast ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-gray-100 cursor-pointer'}
+                            ${isSelected ? 'bg-primary text-white hover:bg-primary/90 font-semibold' : ''}
+                            ${inRange ? 'bg-primary-light text-primary' : ''}
                           `}
                         >
                           {date.getDate()}
@@ -503,7 +505,7 @@ function BookingPageContent() {
 
             {/* Step 2: Guest Details */}
             {currentStep === 'details' && (
-              <div className="bg-white rounded-lg shadow-md p-8">
+              <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
                 <h2 className="text-2xl font-heading font-bold mb-6">Guest Information</h2>
 
                 <form className="space-y-4">
@@ -546,15 +548,17 @@ function BookingPageContent() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                    <select name="country" value={guestDetails.country} onChange={handleGuestDetailsChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                      <option value="">Select Country</option>
-                      <option value="LK">Sri Lanka</option>
-                      <option value="US">United States</option>
-                      <option value="UK">United Kingdom</option>
-                      <option value="IN">India</option>
-                      <option value="AU">Australia</option>
-                    </select>
+                    <div className="select-wrapper">
+                      <select name="country" value={guestDetails.country} onChange={handleGuestDetailsChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                        <option value="">Select Country</option>
+                        <option value="LK">Sri Lanka</option>
+                        <option value="US">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="IN">India</option>
+                        <option value="AU">Australia</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div>
@@ -585,7 +589,7 @@ function BookingPageContent() {
 
             {/* Step 3: Payment */}
             {currentStep === 'payment' && (
-              <div className="bg-white rounded-lg shadow-md p-8">
+              <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
                 <h2 className="text-2xl font-heading font-bold mb-6">Payment Method</h2>
 
                 {/* Online payment via PayHere */}
@@ -702,7 +706,7 @@ function BookingPageContent() {
 
             {/* Step 4: Confirmation */}
             {currentStep === 'confirmation' && (
-              <div className="bg-white rounded-lg shadow-md p-8 text-center">
+              <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 text-center">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Check className="text-green-600" size={40} />
                 </div>

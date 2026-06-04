@@ -101,17 +101,19 @@ export default function RoomsPage() {
             />
           </div>
           <div className="flex gap-2">
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value as RoomStatus | 'all')}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="all">All Status</option>
-              <option value="available">Available</option>
-              <option value="booked">Booked</option>
-              <option value="cleaning">Cleaning</option>
-              <option value="maintenance">Maintenance</option>
-            </select>
+            <div className="select-wrapper flex-1">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as RoomStatus | 'all')}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+              >
+                <option value="all">All Status</option>
+                <option value="available">Available</option>
+                <option value="booked">Booked</option>
+                <option value="cleaning">Cleaning</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+            </div>
             <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center gap-2">
               <Plus size={20} />
               <span className="hidden sm:inline">Add Room</span>

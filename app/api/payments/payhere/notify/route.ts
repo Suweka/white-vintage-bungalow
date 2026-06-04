@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { prisma } from '@/lib/prisma';
+import { sendBookingConfirmedEmail } from '@/lib/email';
 
 const MERCHANT_ID     = process.env.PAYHERE_MERCHANT_ID     || '';
 const MERCHANT_SECRET = process.env.PAYHERE_MERCHANT_SECRET || '';
@@ -82,6 +83,26 @@ export async function POST(request: NextRequest) {
         create: { bookingId: primary.id, amount: Number(payhereAmount), status: paymentStatus },
         update: { status: paymentStatus, amount: Number(payhereAmount) },
       });
+
+      // Send confirmation email on successful PayHere payment
+      if (statusCode === '2') {
+        const booking = await prisma.booking.findFirst({
+          where:   { bookingNumber: orderId },
+          include: { guestCheckout: true, room: true },
+        });
+        const guest = booking?.guestCheckout;
+        if (guest?.email && booking) {
+          const fmtDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          sendBookingConfirmedEmail({
+            to:            guest.email,
+            guestName:     `${guest.firstName} ${guest.lastName}`,
+            bookingNumber: orderId,
+            rooms:         booking.room.name,
+            checkIn:       fmtDate(booking.checkIn),
+            checkOut:      fmtDate(booking.checkOut),
+          }).catch(err => console.error('[email] payhere confirmation email failed:', err));
+        }
+      }
     }
 
     console.log(`[notify] order=${orderId} status=${statusCode} (${paymentStatus})`);

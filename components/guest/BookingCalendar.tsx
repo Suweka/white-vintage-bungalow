@@ -123,7 +123,7 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
           key={day}
           onClick={() => handleDateClick(day)}
           disabled={isDisabled}
-          className={`h-12 flex items-center justify-center rounded-lg font-medium transition-all
+          className={`h-8 sm:h-12 flex items-center justify-center rounded-lg text-xs sm:text-sm font-medium transition-all
             ${isDisabled ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-primary-light cursor-pointer'}
             ${isCheckIn || isCheckOut ? 'bg-primary text-white hover:bg-primary-dark' : ''}
             ${isInRange ? 'bg-primary-light text-primary' : ''}
@@ -139,9 +139,9 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-md">
+    <div className="bg-white rounded-lg p-3 sm:p-6 shadow-md">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <button
           onClick={prevMonth}
           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -160,11 +160,11 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
       </div>
 
       {/* Days of Week */}
-      <div className="grid grid-cols-7 gap-2 mb-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-1 sm:mb-2">
         {daysOfWeek.map((day) => (
           <div
             key={day}
-            className="h-10 flex items-center justify-center text-sm font-semibold text-gray-600"
+            className="h-7 sm:h-10 flex items-center justify-center text-xs sm:text-sm font-semibold text-gray-600"
           >
             {day}
           </div>
@@ -172,7 +172,7 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
       </div>
 
       {/* Calendar Days */}
-      <div className="grid grid-cols-7 gap-2">{renderCalendar()}</div>
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">{renderCalendar()}</div>
 
       {/* Legend */}
       <div className="mt-6 flex flex-wrap gap-4 text-sm">
