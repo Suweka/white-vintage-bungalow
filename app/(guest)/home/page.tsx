@@ -7,11 +7,14 @@ import { RoomCard } from '@/components/guest/RoomCard';
 import { QuickBookingWidget } from '@/components/guest/QuickBookingWidget';
 import {
   Wifi,
-  Coffee,
-  Waves,
-  Dumbbell,
-  Car,
-  UtensilsCrossed,
+  ChefHat,
+  Trees,
+  Droplets,
+  Sofa,
+  Flame,
+  Speaker,
+  Mountain,
+  Tv,
   Star,
   MapPin,
   Calendar,
@@ -53,12 +56,15 @@ export default function HomePage() {
   ];
 
   const services = [
-    { icon: Dumbbell, title: 'Fitness Center', description: 'State-of-the-art equipment for your wellness routine' },
-    { icon: Coffee, title: 'Jacuzzi', description: 'Relax and unwind in our heated jacuzzi' },
-    { icon: Waves, title: 'Swimming Pool', description: 'Outdoor pool with mountain views' },
-    { icon: UtensilsCrossed, title: 'Restaurant', description: 'Fine dining with local and international cuisine' },
-    { icon: Car, title: 'Transportation', description: 'Airport pickup and local tour arrangements' },
-    { icon: Wifi, title: 'WiFi Router', description: 'High-speed internet throughout the property' },
+    { icon: ChefHat,  title: 'In-House Chef',            description: 'Enjoy freshly prepared home-style meals from our dedicated in-house chef' },
+    { icon: Wifi,     title: 'Free WiFi',                 description: 'High-speed internet access throughout the entire property' },
+    { icon: Trees,    title: 'Garden Space',              description: 'Lush private garden perfect for relaxing amid nature' },
+    { icon: Droplets, title: 'Hot Water',                 description: 'Reliable hot water available in every room around the clock' },
+    { icon: Sofa,     title: 'Living & Dining Rooms',     description: 'Spacious shared living room and elegant dining area for your comfort' },
+    { icon: Flame,    title: 'Barbeque Grill',            description: 'Outdoor BBQ grill available for a fun evening cookout experience' },
+    { icon: Speaker,  title: 'Bluetooth Mic & Speakers',  description: 'Entertainment-ready Bluetooth speakers and mic for gatherings' },
+    { icon: Mountain, title: 'Picturesque Surroundings',  description: 'Breathtaking views of misty mountains and tea plantations at every turn' },
+    { icon: Tv,       title: 'TV in Every Room',          description: 'Each room equipped with a television for your entertainment' },
   ];
 
   const testimonials = [

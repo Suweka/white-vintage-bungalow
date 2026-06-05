@@ -96,10 +96,10 @@ const ROOM_BY_SLUG: Record<string, RoomInfo> = {
 };
 
 const SHARED_AMENITIES = {
-  room: ['King Size Bed', 'Work Desk', 'Wardrobe', 'Seating Area', 'Mountain View'],
-  bathroom: ['Shower', 'Bathtub', 'Hair Dryer', 'Premium Toiletries', 'Hot Water'],
-  technology: ['Free WiFi', 'Smart TV', 'Safe', 'Telephone', 'AC'],
-  food: ['Mini Bar', 'Coffee/Tea Maker', 'Room Service', 'Complimentary Breakfast'],
+  room: ['Comfortable Bed', 'Work Desk', 'Wardrobe', 'Seating Area', 'Garden / Mountain View'],
+  bathroom: ['Shower', 'Hair Dryer', 'Premium Toiletries', 'Hot Water'],
+  technology: ['Free WiFi', 'Smart TV', 'AC'],
+  food: ['In-House Chef', 'Coffee/Tea Maker', 'BBQ Grill Access', 'Complimentary Breakfast'],
 };
 
 const SHARED_POLICIES = {
@@ -264,7 +264,7 @@ export default function RoomDetailsPage({ params: { slug } }: { params: { slug: 
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <Coffee size={20} className="text-primary" /> Food & Beverage
+                    <Coffee size={20} className="text-primary" /> Dining & Kitchen
                   </h3>
                   <ul className="space-y-2">
                     {SHARED_AMENITIES.food.map((item, i) => (
