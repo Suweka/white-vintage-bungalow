@@ -22,7 +22,7 @@ export default function RoomsPage() {
       size: 350,
       image: '/images/rooms/deluxe.jpeg',
       badge: 'Best Value',
-      amenities: ['WiFi', 'Coffee', 'TV', 'AC'],
+      amenities: ['WiFi', 'Hot Water', 'TV', 'AC'],
     },
     {
       id: 'junior-suite',
@@ -32,7 +32,7 @@ export default function RoomsPage() {
       maxGuests: 3,
       size: 450,
       image: '/images/rooms/junior.jpeg',
-      amenities: ['WiFi', 'Coffee', 'TV', 'AC', 'Minibar'],
+      amenities: ['WiFi', 'Hot Water', 'TV', 'AC'],
     },
     {
       id: 'family-room',
@@ -43,7 +43,7 @@ export default function RoomsPage() {
       size: 550,
       image: '/images/rooms/family.jpeg',
       badge: 'Family Pick',
-      amenities: ['WiFi', 'Coffee', 'TV', 'AC', 'Kitchen'],
+      amenities: ['WiFi', 'Hot Water', 'TV', 'AC', 'Garden Access'],
     },
     {
       id: 'single-room',
@@ -53,7 +53,7 @@ export default function RoomsPage() {
       maxGuests: 1,
       size: 280,
       image: '/images/rooms/single.jpeg',
-      amenities: ['WiFi', 'Coffee', 'TV'],
+      amenities: ['WiFi', 'Hot Water', 'TV'],
     },
     {
       id: 'premium-suite',
@@ -64,7 +64,7 @@ export default function RoomsPage() {
       size: 600,
       image: '/images/rooms/premium.jpeg',
       badge: 'Luxury',
-      amenities: ['WiFi', 'Coffee', 'TV', 'AC', 'Minibar', 'Jacuzzi', 'Balcony'],
+      amenities: ['WiFi', 'Hot Water', 'TV', 'AC', 'Garden Access', 'Balcony'],
     },
     {
       id: 'garden-view',
@@ -74,7 +74,7 @@ export default function RoomsPage() {
       maxGuests: 2,
       size: 380,
       image: '/images/rooms/garden.jpeg',
-      amenities: ['WiFi', 'Coffee', 'TV', 'AC', 'Garden Access'],
+      amenities: ['WiFi', 'Hot Water', 'TV', 'AC', 'Garden Access'],
     },
   ];
 

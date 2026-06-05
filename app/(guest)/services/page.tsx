@@ -3,12 +3,16 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import {
-  Dumbbell,
-  Coffee,
-  Waves,
-  UtensilsCrossed,
-  Car,
+  ChefHat,
   Wifi,
+  Trees,
+  Droplets,
+  Sofa,
+  Flame,
+  Speaker,
+  Mountain,
+  Tv,
+  Car,
   Sparkles,
   Briefcase,
   Check,
@@ -17,93 +21,145 @@ import {
 export default function ServicesPage() {
   const services = [
     {
-      icon: Dumbbell,
-      title: 'Fitness Center',
-      description: 'State-of-the-art gymnasium with modern equipment, personal training available.',
+      icon: ChefHat,
+      title: 'In-House Chef',
+      description: 'Enjoy freshly prepared home-style meals crafted by our dedicated in-house chef using local ingredients.',
       features: [
-        'Cardio equipment',
-        'Weight training',
-        'Yoga mats & accessories',
-        'Personal trainer on request',
-        'Open 6 AM - 10 PM',
+        'Sri Lankan home-cooked meals',
+        'Complimentary breakfast',
+        'Lunch & dinner on request',
+        'Dietary preferences accommodated',
+        'Fresh local produce',
       ],
-      price: 'Complimentary for guests',
-    },
-    {
-      icon: Coffee,
-      title: 'Jacuzzi & Spa',
-      description: 'Relax and rejuvenate in our heated jacuzzi with stunning mountain views.',
-      features: [
-        'Heated jacuzzi',
-        'Massage services',
-        'Aromatherapy treatments',
-        'Couple packages available',
-        'Appointment based',
-      ],
-      price: 'From LKR 5,000',
-    },
-    {
-      icon: Waves,
-      title: 'Swimming Pool',
-      description: 'Outdoor heated pool surrounded by landscaped gardens with panoramic views.',
-      features: [
-        'Heated outdoor pool',
-        'Pool towels provided',
-        'Poolside bar service',
-        'Children-friendly area',
-        'Open 7 AM - 8 PM',
-      ],
-      price: 'Complimentary for guests',
-    },
-    {
-      icon: UtensilsCrossed,
-      title: 'Restaurant & Dining',
-      description: 'Fine dining experience featuring local and international cuisine.',
-      features: [
-        'Breakfast buffet',
-        'À la carte menu',
-        'Room service',
-        'Special dietary options',
-        'Private dining available',
-      ],
-      price: 'Varies by menu',
-    },
-    {
-      icon: Car,
-      title: 'Transportation',
-      description: 'Airport transfers and local tour arrangements for your convenience.',
-      features: [
-        'Airport pickup/drop-off',
-        'Local tour packages',
-        'Car rental services',
-        'Driver services',
-        'Advanced booking required',
-      ],
-      price: 'From LKR 8,000',
+      price: 'Breakfast included',
     },
     {
       icon: Wifi,
-      title: 'WiFi & Business',
-      description: 'High-speed internet and business facilities throughout the property.',
+      title: 'Free WiFi',
+      description: 'High-speed internet access available throughout the entire property at no extra charge.',
       features: [
-        'Free high-speed WiFi',
-        'Business center',
-        'Meeting rooms',
-        'Printing services',
+        'Available in all rooms',
+        'Available in common areas',
+        'High-speed connection',
+        'No usage limits',
         '24/7 availability',
       ],
       price: 'Complimentary',
     },
     {
+      icon: Trees,
+      title: 'Garden Space',
+      description: 'Lush private garden offering a peaceful retreat amid nature, perfect for morning walks or relaxing evenings.',
+      features: [
+        'Beautifully landscaped garden',
+        'Seating areas outdoors',
+        'Scenic nature walks',
+        'Perfect for photography',
+        'Available all day',
+      ],
+      price: 'Complimentary for guests',
+    },
+    {
+      icon: Droplets,
+      title: 'Hot Water',
+      description: 'Reliable 24-hour hot water available in every bathroom across the property.',
+      features: [
+        'Available in all rooms',
+        'Round-the-clock supply',
+        'Consistent pressure',
+        'Electric water heaters',
+        'No disruptions',
+      ],
+      price: 'Complimentary',
+    },
+    {
+      icon: Sofa,
+      title: 'Living & Dining Rooms',
+      description: 'Spacious shared living room and a beautifully set dining area for family gatherings and relaxation.',
+      features: [
+        'Comfortable lounge seating',
+        'Elegant dining table',
+        'Colonial-era décor',
+        'Board games & books available',
+        'Shared access for all guests',
+      ],
+      price: 'Complimentary for guests',
+    },
+    {
+      icon: Flame,
+      title: 'Barbeque Grill',
+      description: 'Outdoor BBQ grill available for guests to enjoy a fun evening cookout in the garden.',
+      features: [
+        'Full BBQ setup provided',
+        'Charcoal & utensils included',
+        'Outdoor garden setting',
+        'Available on request',
+        'Best for evenings',
+      ],
+      price: 'Arrangements on request',
+    },
+    {
+      icon: Speaker,
+      title: 'Bluetooth Mic & Speakers',
+      description: 'Entertainment-ready Bluetooth speakers and microphone for gatherings, karaoke nights, and celebrations.',
+      features: [
+        'High-quality speakers',
+        'Wireless Bluetooth mic',
+        'Perfect for karaoke',
+        'Great for group events',
+        'Available on request',
+      ],
+      price: 'Complimentary for guests',
+    },
+    {
+      icon: Mountain,
+      title: 'Picturesque Surroundings',
+      description: 'Breathtaking views of misty mountains, tea plantations, and lush greenery at every turn.',
+      features: [
+        'Mountain panoramic views',
+        'Tea plantation scenery',
+        'Ideal for photography',
+        'Sunrise & sunset views',
+        'Cool hill-country climate',
+      ],
+      price: 'Complimentary',
+    },
+    {
+      icon: Tv,
+      title: 'TV in Every Room',
+      description: 'Each guest room is equipped with a television for your entertainment and comfort.',
+      features: [
+        'Available in all rooms',
+        'Multiple channels',
+        'Clear picture quality',
+        'Remote control provided',
+        'Free to use',
+      ],
+      price: 'Complimentary',
+    },
+    {
+      icon: Car,
+      title: 'Transportation',
+      description: 'Airport transfers and local sightseeing tour arrangements for your convenience.',
+      features: [
+        'Airport pickup/drop-off',
+        'Local tour packages',
+        'Driver services available',
+        'Tea estate visits',
+        'Advance booking required',
+      ],
+      price: 'From LKR 8,000',
+    },
+    {
       icon: Sparkles,
       title: 'Laundry Services',
-      description: 'Professional laundry and dry cleaning services with quick turnaround.',
+      description: 'Professional laundry services with quick turnaround for a fresh, comfortable stay.',
       features: [
         'Same-day service',
-        'Dry cleaning',
         'Ironing services',
         'Eco-friendly products',
         'Door-to-door pickup',
+        'Affordable rates',
       ],
       price: 'From LKR 500',
     },
@@ -114,21 +170,21 @@ export default function ServicesPage() {
       features: [
         'Local recommendations',
         'Booking assistance',
-        'Event planning',
+        'Event & tour planning',
         'Emergency support',
-        'Multilingual staff',
+        'Friendly & attentive staff',
       ],
       price: 'Complimentary',
     },
   ];
 
   const additionalServices = [
-    'Babysitting services',
-    'Medical assistance',
-    'Currency exchange',
     'Luggage storage',
     'Wake-up calls',
-    'Newspaper delivery',
+    'Local tour guidance',
+    'Celebration setups',
+    'Currency exchange',
+    'Medical assistance',
   ];
 
   return (
@@ -138,7 +194,7 @@ export default function ServicesPage() {
         <div className="container mx-auto text-center">
           <h1 className="text-5xl font-heading font-bold mb-4">Our Services</h1>
           <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-            Comprehensive amenities and services designed for your comfort and convenience
+            Everything you need for a comfortable, memorable stay at White Vintage Bungalow
           </p>
         </div>
       </section>
@@ -147,9 +203,9 @@ export default function ServicesPage() {
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="text-primary font-medium mb-2">WHAT WE OFFER</div>
-          <h2 className="text-4xl font-heading font-bold">Get The Best Hotel Services</h2>
+          <h2 className="text-4xl font-heading font-bold">Our Facilities & Services</h2>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            From wellness facilities to business amenities, we provide everything you need for a perfect stay
+            From home-cooked meals to scenic garden spaces, every detail is crafted for your comfort
           </p>
         </div>
 
@@ -162,10 +218,8 @@ export default function ServicesPage() {
               <div className="w-16 h-16 bg-primary-light rounded-lg flex items-center justify-center mb-4">
                 <service.icon className="text-primary" size={32} />
               </div>
-              
               <h3 className="text-2xl font-heading font-semibold mb-3">{service.title}</h3>
               <p className="text-gray-600 mb-4">{service.description}</p>
-              
               <ul className="space-y-2 mb-6">
                 {service.features.map((feature, i) => (
                   <li key={i} className="flex items-start gap-2 text-gray-700">
@@ -174,14 +228,8 @@ export default function ServicesPage() {
                   </li>
                 ))}
               </ul>
-
               <div className="pt-4 border-t border-gray-200">
-                <div className="flex items-center justify-between">
-                  <span className="text-primary font-semibold">{service.price}</span>
-                  <Button variant="outline" size="sm">
-                    Learn More
-                  </Button>
-                </div>
+                <span className="text-primary font-semibold">{service.price}</span>
               </div>
             </div>
           ))}
@@ -193,11 +241,8 @@ export default function ServicesPage() {
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-heading font-bold">Additional Services</h2>
-            <p className="text-gray-600 mt-4">
-              More ways we can make your stay comfortable
-            </p>
+            <p className="text-gray-600 mt-4">More ways we make your stay comfortable</p>
           </div>
-
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
             {additionalServices.map((service, index) => (
               <div
@@ -212,41 +257,38 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Special Packages */}
+      {/* Packages */}
       <section className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <div className="text-primary font-medium mb-2">SPECIAL OFFERS</div>
-          <h2 className="text-4xl font-heading font-bold">Service Packages</h2>
+          <h2 className="text-4xl font-heading font-bold">Experience Packages</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {/* BBQ Evening Package */}
           <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-primary">
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-heading font-bold mb-2">Wellness Package</h3>
-              <div className="text-3xl font-bold text-primary mb-1">LKR 25,000</div>
-              <p className="text-gray-600">per person</p>
+              <h3 className="text-2xl font-heading font-bold mb-2">BBQ Evening Package</h3>
+              <div className="text-3xl font-bold text-primary mb-1">LKR 15,000</div>
+              <p className="text-gray-600">per group</p>
             </div>
-
             <ul className="space-y-3 mb-8">
               {[
-                '2 spa treatments',
-                'Jacuzzi access',
-                'Fitness sessions',
-                'Healthy meals',
-                'Yoga classes',
+                'Full BBQ grill setup',
+                'Chef-prepared sides',
+                'Bluetooth speaker access',
+                'Garden seating',
+                'Evening drinks',
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2">
-                  <Check size={16} className="text-primary" />
-                  <span>{item}</span>
+                  <Check size={16} className="text-primary" /><span>{item}</span>
                 </li>
               ))}
             </ul>
-
-            <Button variant="primary" size="lg" className="w-full">
-              Book Package
-            </Button>
+            <Button variant="primary" size="lg" className="w-full">Book Package</Button>
           </div>
 
+          {/* Romance Package */}
           <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-accent">
             <div className="bg-accent text-gray-900 px-3 py-1 rounded-full inline-block mb-4 text-sm font-semibold">
               POPULAR
@@ -256,52 +298,43 @@ export default function ServicesPage() {
               <div className="text-3xl font-bold text-primary mb-1">LKR 35,000</div>
               <p className="text-gray-600">per couple</p>
             </div>
-
             <ul className="space-y-3 mb-8">
               {[
-                'Couples massage',
-                'Candlelight dinner',
+                'Chef-prepared candlelight dinner',
                 'Room decoration',
-                'Champagne',
+                'Garden evening walk',
+                'Bluetooth music setup',
                 'Late checkout',
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2">
-                  <Check size={16} className="text-primary" />
-                  <span>{item}</span>
+                  <Check size={16} className="text-primary" /><span>{item}</span>
                 </li>
               ))}
             </ul>
-
-            <Button variant="primary" size="lg" className="w-full">
-              Book Package
-            </Button>
+            <Button variant="primary" size="lg" className="w-full">Book Package</Button>
           </div>
 
+          {/* Adventure Package */}
           <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-primary">
             <div className="text-center mb-6">
               <h3 className="text-2xl font-heading font-bold mb-2">Adventure Package</h3>
               <div className="text-3xl font-bold text-primary mb-1">LKR 30,000</div>
               <p className="text-gray-600">per person</p>
             </div>
-
             <ul className="space-y-3 mb-8">
               {[
-                'Local tours',
-                'Transportation',
-                'Hiking guide',
-                'Packed meals',
-                'Photography',
+                'Tea estate guided tour',
+                'Local sightseeing',
+                'Transportation included',
+                'Packed chef-made meals',
+                'Photography spots',
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-2">
-                  <Check size={16} className="text-primary" />
-                  <span>{item}</span>
+                  <Check size={16} className="text-primary" /><span>{item}</span>
                 </li>
               ))}
             </ul>
-
-            <Button variant="primary" size="lg" className="w-full">
-              Book Package
-            </Button>
+            <Button variant="primary" size="lg" className="w-full">Book Package</Button>
           </div>
         </div>
       </section>
@@ -311,12 +344,10 @@ export default function ServicesPage() {
         <div className="container mx-auto text-center">
           <h2 className="text-3xl font-heading font-bold mb-4">Ready to Experience Our Services?</h2>
           <p className="text-gray-200 mb-8 max-w-2xl mx-auto">
-            Book your stay and enjoy all our premium amenities and services
+            Book your stay and enjoy all our genuine amenities and warm hospitality
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="lg">
-              Book Now
-            </Button>
+            <Button variant="secondary" size="lg">Book Now</Button>
             <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-primary">
               Contact Us
             </Button>
@@ -327,15 +358,15 @@ export default function ServicesPage() {
       {/* Service Hours */}
       <section className="container mx-auto px-4 py-16">
         <div className="bg-gray-100 p-8 rounded-lg max-w-3xl mx-auto">
-          <h3 className="text-2xl font-heading font-bold mb-6 text-center">Service Hours</h3>
+          <h3 className="text-2xl font-heading font-bold mb-6 text-center">Availability</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { service: 'Reception', hours: '24/7' },
-              { service: 'Restaurant', hours: '7:00 AM - 10:00 PM' },
-              { service: 'Pool', hours: '7:00 AM - 8:00 PM' },
-              { service: 'Fitness Center', hours: '6:00 AM - 10:00 PM' },
-              { service: 'Spa', hours: '9:00 AM - 8:00 PM' },
-              { service: 'Room Service', hours: '24/7' },
+              { service: 'Reception / Check-in',    hours: '24/7' },
+              { service: 'In-House Chef (meals)',    hours: '7:00 AM – 9:00 PM' },
+              { service: 'BBQ Grill',               hours: '4:00 PM – 9:00 PM' },
+              { service: 'Garden Access',            hours: 'All day' },
+              { service: 'Transportation',           hours: 'By appointment' },
+              { service: 'Concierge',               hours: '24/7' },
             ].map((item, i) => (
               <div key={i} className="flex justify-between items-center p-4 bg-white rounded-lg">
                 <span className="font-medium">{item.service}</span>
