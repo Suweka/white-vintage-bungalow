@@ -4,6 +4,19 @@ const resend  = new Resend(process.env.RESEND_API_KEY);
 const BASE_URL = process.env.NEXTAUTH_URL || 'http://localhost:3000';
 const FROM     = 'White Vintage Bungalow <onboarding@resend.dev>';
 
+const BRAND_HEADER = `
+  <div style="background:#208f6a;padding:24px;border-radius:8px 8px 0 0;text-align:center">
+    <h1 style="color:#fff;margin:0;font-size:24px">White Vintage Bungalow</h1>
+    <p style="color:#b7e4c7;margin:4px 0 0">Nuwara Eliya, Sri Lanka</p>
+  </div>`;
+
+const BRAND_FOOTER = `
+  <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
+  <p style="font-size:13px;color:#888;text-align:center">
+    Questions? <a href="mailto:whitevintagebunglow@gmail.com" style="color:#208f6a">whitevintagebunglow@gmail.com</a>
+    | <a href="tel:+94777180599" style="color:#208f6a">+94 777 180 599</a>
+  </p>`;
+
 async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
   if (!process.env.RESEND_API_KEY) {
     console.log(`[EMAIL not sent — RESEND_API_KEY not set]\nTo: ${to}\nSubject: ${subject}`);
@@ -100,10 +113,7 @@ export async function sendBookingConfirmedEmail({
 <!DOCTYPE html>
 <html>
 <body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333">
-  <div style="background:#2d6a4f;padding:24px;border-radius:8px 8px 0 0;text-align:center">
-    <h1 style="color:#fff;margin:0;font-size:24px">White Vintage Bungalow</h1>
-    <p style="color:#b7e4c7;margin:4px 0 0">Nuwara Eliya, Sri Lanka</p>
-  </div>
+  ${BRAND_HEADER}
   <div style="background:#f9f9f9;padding:28px;border:1px solid #e0e0e0">
     <h2 style="color:#2d6a4f;margin-top:0">&#x2705; Booking Confirmed!</h2>
     <p>Dear <strong>${guestName}</strong>,</p>
@@ -124,12 +134,58 @@ export async function sendBookingConfirmedEmail({
 
     <p>Check-in is from <strong>2:00 PM</strong>. Please bring a valid photo ID.</p>
     <p>We look forward to welcoming you to White Vintage Bungalow!</p>
+    ${BRAND_FOOTER}
+  </div>
+</body>
+</html>`,
+  });
+}
 
+export async function sendNewsletterWelcomeEmail({ to }: { to: string }) {
+  await sendEmail({
+    to,
+    subject: 'Welcome to White Vintage Bungalow Newsletter!',
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333">
+  ${BRAND_HEADER}
+  <div style="background:#f9f9f9;padding:28px;border:1px solid #e0e0e0">
+    <h2 style="color:#2d6a4f;margin-top:0">&#x1F4EC; Welcome to Our Newsletter!</h2>
+    <p>Thank you for subscribing to the White Vintage Bungalow newsletter.</p>
+    <p>You'll be among the first to receive:</p>
+    <ul style="color:#555;line-height:1.8">
+      <li>Exclusive offers and seasonal deals</li>
+      <li>Updates on our facilities and new packages</li>
+      <li>Travel tips for Nuwara Eliya</li>
+      <li>Special event announcements</li>
+    </ul>
+    <p>We're delighted to have you with us. If you have any questions or would like to make a booking, feel free to reach out anytime.</p>
+    ${BRAND_FOOTER}
+  </div>
+</body>
+</html>`,
+  });
+}
+
+export async function sendNewsletterBroadcast({
+  to, subject, message,
+}: { to: string; subject: string; message: string }) {
+  await sendEmail({
+    to,
+    subject,
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333">
+  ${BRAND_HEADER}
+  <div style="background:#f9f9f9;padding:28px;border:1px solid #e0e0e0">
+    ${message.split('\n').map(line => `<p style="margin:0 0 12px;line-height:1.6;color:#444">${line}</p>`).join('')}
     <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
-    <p style="font-size:13px;color:#888;text-align:center">
-      Questions? <a href="mailto:whitevintagebunglow@gmail.com" style="color:#2d6a4f">whitevintagebunglow@gmail.com</a>
-      | <a href="tel:+94777180599" style="color:#2d6a4f">+94 777 180 599</a>
+    <p style="font-size:12px;color:#aaa;text-align:center">
+      You're receiving this because you subscribed to White Vintage Bungalow updates.
     </p>
+    ${BRAND_FOOTER}
   </div>
 </body>
 </html>`,

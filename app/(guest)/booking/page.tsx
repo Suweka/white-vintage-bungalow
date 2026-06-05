@@ -19,6 +19,8 @@ import {
   ExternalLink,
   Minus,
   Plus,
+  Upload,
+  Clock,
 } from 'lucide-react';
 
 type BookingStep = 'dates' | 'details' | 'payment' | 'confirmation';
@@ -800,15 +802,66 @@ function BookingPageContent() {
             {/* Step 4: Confirmation */}
             {currentStep === 'confirmation' && (
               <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Check className="text-green-600" size={40} />
-                </div>
-                <h2 className="text-3xl font-heading font-bold mb-4">Booking Confirmed!</h2>
-                <p className="text-gray-600 mb-2">Thank you for your reservation</p>
-                <p className="text-lg font-semibold mb-6">
-                  Booking Reference: <span className="text-primary">{bookingReference}</span>
-                </p>
 
+                {paymentMethod === 'bank' ? (
+                  /* ── Bank Transfer: Payment Pending ── */
+                  <>
+                    <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Clock className="text-amber-600" size={40} />
+                    </div>
+                    <h2 className="text-3xl font-heading font-bold mb-2">Booking Received!</h2>
+                    <p className="text-amber-600 font-semibold mb-2">Payment Pending — Awaiting Transfer</p>
+                    <p className="text-lg font-semibold mb-6">
+                      Booking Reference: <span className="text-primary">{bookingReference}</span>
+                    </p>
+
+                    {/* Upload CTA */}
+                    <div className="bg-amber-50 border-2 border-amber-300 rounded-xl p-6 mb-6 text-left">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Upload className="text-amber-600" size={22} />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-900 mb-1">Upload Your Transfer Receipt</h3>
+                          <p className="text-sm text-gray-600 mb-4">
+                            Your booking is <strong>not confirmed yet</strong>. To complete your reservation, please transfer the amount to our bank account and upload your receipt. We will confirm your booking within <strong>2–4 hours</strong> of verification.
+                          </p>
+                          <a
+                            href={`/booking/upload-receipt?ref=${bookingReference}`}
+                            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors text-sm"
+                          >
+                            <Upload size={16} />
+                            Upload Receipt Now
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bank details reminder */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6 text-left text-sm space-y-1">
+                      <p className="font-semibold text-gray-700 mb-2">Bank Transfer Details</p>
+                      <div className="flex justify-between"><span className="text-gray-500">Bank</span><span className="font-medium">Commercial Bank of Ceylon</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Account Name</span><span className="font-medium">White Vintage Bungalow</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Account No.</span><span className="font-medium">8000123456</span></div>
+                      <div className="flex justify-between"><span className="text-gray-500">Branch</span><span className="font-medium">Nuwara Eliya</span></div>
+                      <p className="text-xs text-gray-400 pt-1">Use <strong>{bookingReference}</strong> as your payment reference.</p>
+                    </div>
+                  </>
+                ) : (
+                  /* ── Online Payment: Confirmed ── */
+                  <>
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <Check className="text-green-600" size={40} />
+                    </div>
+                    <h2 className="text-3xl font-heading font-bold mb-4">Booking Confirmed!</h2>
+                    <p className="text-gray-600 mb-2">Thank you for your reservation</p>
+                    <p className="text-lg font-semibold mb-6">
+                      Booking Reference: <span className="text-primary">{bookingReference}</span>
+                    </p>
+                  </>
+                )}
+
+                {/* Booking details (shared) */}
                 <div className="bg-primary-light p-6 rounded-lg mb-6 text-left">
                   <h3 className="font-semibold mb-4">Booking Details</h3>
                   <div className="space-y-2 text-sm">
@@ -842,12 +895,23 @@ function BookingPageContent() {
                 <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-lg mb-6 text-left">
                   <AlertCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
                   <p className="text-sm text-gray-700">
-                    A confirmation email has been sent to <strong>{guestDetails.email}</strong> with all the booking details.
+                    {paymentMethod === 'bank'
+                      ? <>A confirmation email with your bank transfer instructions and receipt upload link has been sent to <strong>{guestDetails.email}</strong>.</>
+                      : <>A confirmation email has been sent to <strong>{guestDetails.email}</strong> with all booking details.</>
+                    }
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button variant="primary" size="lg">View Booking</Button>
+                  {paymentMethod === 'bank' ? (
+                    <Button variant="primary" size="lg" onClick={() => window.location.href = `/booking/upload-receipt?ref=${bookingReference}`}>
+                      <Upload size={18} className="mr-2 inline" /> Upload Receipt
+                    </Button>
+                  ) : (
+                    <Button variant="primary" size="lg" onClick={() => window.location.href = '/profile?tab=bookings'}>
+                      View My Bookings
+                    </Button>
+                  )}
                   <Button variant="outline" size="lg" onClick={() => window.location.href = '/'}>Return to Home</Button>
                 </div>
               </div>

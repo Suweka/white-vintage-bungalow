@@ -138,14 +138,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-500 mb-3 text-center">Demo Credentials:</p>
-            <div className="bg-gray-50 p-3 rounded-lg space-y-1 text-xs text-gray-600">
-              <p><strong>Email:</strong> admin@lodgify.com</p>
-              <p><strong>Password:</strong> admin123</p>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}

@@ -15,6 +15,7 @@ import {
   DollarSign,
   Star,
   Settings,
+  Mail,
   LogOut,
   Menu,
   X,
@@ -39,6 +40,7 @@ export const AdminSidebar = () => {
     { icon: DollarSign, label: 'Financials', href: '/admin/financials' },
     { icon: Star, label: 'Reviews', href: '/admin/reviews' },
     { icon: Settings, label: 'Concierge', href: '/admin/concierge' },
+    { icon: Mail, label: 'Newsletter', href: '/admin/newsletter' },
   ];
 
   return (
