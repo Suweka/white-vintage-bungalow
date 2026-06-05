@@ -107,10 +107,12 @@ export default function HomePage() {
         </div>
         
         {/* Scroll Down Indicator */}
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center pt-2">
-            <div className="w-1 h-3 bg-white rounded-full"></div>
-          </div>
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 animate-bounce flex flex-col items-center gap-1">
+          <span className="text-white/60 text-xs font-medium tracking-widest uppercase">Scroll</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-white drop-shadow">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6 14l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
+          </svg>
         </div>
       </section>
 
