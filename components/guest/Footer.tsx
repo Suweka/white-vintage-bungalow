@@ -120,11 +120,11 @@ export const Footer = () => {
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={18} className="text-accent flex-shrink-0" />
-                <span>+94 (52) 222 5232</span>
+                <span>+94 777 180 599</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={18} className="text-accent flex-shrink-0" />
-                <span>info@whitevintage.com</span>
+                <span>whitevintagebunglow@gmail.com</span>
               </li>
             </ul>
           </div>

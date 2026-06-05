@@ -162,8 +162,8 @@ export default function PrivacyPage() {
                 If you have any questions or concerns about our Privacy Policy, please contact us:
               </p>
               <ul className="text-gray-700 space-y-2">
-                <li>Email: <a href="mailto:info@whitevintage.com" className="text-primary hover:underline">info@whitevintage.com</a></li>
-                <li>Phone: +94 (52) 222 5232</li>
+                <li>Email: <a href="mailto:whitevintagebunglow@gmail.com" className="text-primary hover:underline">whitevintagebunglow@gmail.com</a></li>
+                <li>Phone: +94 777 180 599</li>
                 <li>Address: 78/5 Bakers Park, 18 Dawson Hills, Nuwara Eliya, Sri Lanka</li>
               </ul>
             </div>

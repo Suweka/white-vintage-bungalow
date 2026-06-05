@@ -35,12 +35,12 @@ export default function ContactPage() {
     {
       icon: Phone,
       title: 'Phone',
-      details: ['Monday-Friday: 08:00-22:00', '+94 (52) 222 5232'],
+      details: ['Monday-Friday: 08:00-22:00', '+94 777 180 599'],
     },
     {
       icon: Mail,
       title: 'Email',
-      details: ['Send us your query anytime!', 'info@whitevintage.com'],
+      details: ['Send us your query anytime!', 'whitevintagebunglow@gmail.com'],
     },
   ];
 
@@ -207,7 +207,7 @@ export default function ContactPage() {
                   <Phone className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <p className="font-semibold">Phone:</p>
-                    <p className="text-gray-700">+94 (52) 222 5232</p>
+                    <p className="text-gray-700">+94 777 180 599</p>
                   </div>
                 </div>
 
@@ -215,7 +215,7 @@ export default function ContactPage() {
                   <Mail className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <p className="font-semibold">Email:</p>
-                    <p className="text-gray-700">info@whitevintage.com</p>
+                    <p className="text-gray-700">whitevintagebunglow@gmail.com</p>
                   </div>
                 </div>
 

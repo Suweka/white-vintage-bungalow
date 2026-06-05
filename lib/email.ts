@@ -78,8 +78,8 @@ export async function sendBankTransferPendingEmail({
 
     <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
     <p style="font-size:13px;color:#888;text-align:center">
-      Questions? <a href="mailto:info@whitevintage.com" style="color:#2d6a4f">info@whitevintage.com</a>
-      | <a href="tel:+94123456789" style="color:#2d6a4f">+94 (12) 345 6789</a>
+      Questions? <a href="mailto:whitevintagebunglow@gmail.com" style="color:#2d6a4f">whitevintagebunglow@gmail.com</a>
+      | <a href="tel:+94777180599" style="color:#2d6a4f">+94 777 180 599</a>
     </p>
   </div>
 </body>
@@ -127,8 +127,8 @@ export async function sendBookingConfirmedEmail({
 
     <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
     <p style="font-size:13px;color:#888;text-align:center">
-      Questions? <a href="mailto:info@whitevintage.com" style="color:#2d6a4f">info@whitevintage.com</a>
-      | <a href="tel:+94123456789" style="color:#2d6a4f">+94 (12) 345 6789</a>
+      Questions? <a href="mailto:whitevintagebunglow@gmail.com" style="color:#2d6a4f">whitevintagebunglow@gmail.com</a>
+      | <a href="tel:+94777180599" style="color:#2d6a4f">+94 777 180 599</a>
     </p>
   </div>
 </body>

@@ -114,10 +114,10 @@ export default function TermsPage() {
               <h3 className="text-xl font-heading font-semibold mb-3">Questions?</h3>
               <p className="text-gray-700">
                 If you have any questions about these Terms and Conditions, please contact us at{' '}
-                <a href="mailto:info@whitevintage.com" className="text-primary hover:underline">
-                  info@whitevintage.com
+                <a href="mailto:whitevintagebunglow@gmail.com" className="text-primary hover:underline">
+                  whitevintagebunglow@gmail.com
                 </a>{' '}
-                or call us at +94 (52) 222 5232.
+                or call us at +94 777 180 599.
               </p>
             </div>
           </div>

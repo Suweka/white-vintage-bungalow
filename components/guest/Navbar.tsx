@@ -28,13 +28,13 @@ export const Navbar = () => {
       <div className="bg-primary text-white py-2 px-4 text-sm">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <a href="tel:+94123456789" className="flex items-center gap-2 hover:text-accent transition">
+            <a href="tel:+94777180599" className="flex items-center gap-2 hover:text-accent transition">
               <Phone size={14} />
-              <span className="hidden sm:inline">+94 (12) 345 6789</span>
+              <span className="hidden sm:inline">+94 777 180 599</span>
             </a>
-            <a href="mailto:info@whitevintage.com" className="flex items-center gap-2 hover:text-accent transition">
+            <a href="mailto:whitevintagebunglow@gmail.com" className="flex items-center gap-2 hover:text-accent transition">
               <Mail size={14} />
-              <span className="hidden sm:inline">info@whitevintage.com</span>
+              <span className="hidden sm:inline">whitevintagebunglow@gmail.com</span>
             </a>
           </div>
           <div className="hidden md:block">

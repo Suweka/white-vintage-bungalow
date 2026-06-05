@@ -55,8 +55,8 @@ export default function RefundPolicyPage() {
               To cancel your reservation, please contact us as early as possible using one of the following:
             </p>
             <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
-              <li>Email: <a href="mailto:info@whitevintage.com" className="text-primary hover:underline">info@whitevintage.com</a></li>
-              <li>Phone: <a href="tel:+94123456789" className="text-primary hover:underline">+94 (12) 345 6789</a></li>
+              <li>Email: <a href="mailto:whitevintagebunglow@gmail.com" className="text-primary hover:underline">whitevintagebunglow@gmail.com</a></li>
+              <li>Phone: <a href="tel:+94777180599" className="text-primary hover:underline">+94 777 180 599</a></li>
             </ul>
             <p className="text-gray-700 mb-4">
               Please include your booking reference number in all communications. Cancellation requests
@@ -121,8 +121,8 @@ export default function RefundPolicyPage() {
                 please reach out to us — we are always happy to help.
               </p>
               <ul className="text-gray-700 space-y-2">
-                <li>Email: <a href="mailto:info@whitevintage.com" className="text-primary hover:underline">info@whitevintage.com</a></li>
-                <li>Phone: +94 (12) 345 6789</li>
+                <li>Email: <a href="mailto:whitevintagebunglow@gmail.com" className="text-primary hover:underline">whitevintagebunglow@gmail.com</a></li>
+                <li>Phone: +94 777 180 599</li>
                 <li>Address: 78/5 Bakers Park, 18 Dawson Hills, Nuwara Eliya, Sri Lanka</li>
               </ul>
             </div>
