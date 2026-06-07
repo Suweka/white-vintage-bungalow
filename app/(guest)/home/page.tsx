@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { RoomCard } from '@/components/guest/RoomCard';
@@ -18,9 +18,40 @@ import {
   Star,
   MapPin,
   Calendar,
+  CheckCircle,
+  Loader2,
+  X,
 } from 'lucide-react';
 
 export default function HomePage() {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [newsletterPopup, setNewsletterPopup] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setNewsletterLoading(true);
+    setNewsletterPopup(null);
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: newsletterEmail.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok || res.status === 200) {
+        setNewsletterPopup({ type: 'success', message: data.message || 'Thank you for subscribing!' });
+        setNewsletterEmail('');
+      } else {
+        setNewsletterPopup({ type: 'error', message: data.error || 'Something went wrong. Please try again.' });
+      }
+    } catch {
+      setNewsletterPopup({ type: 'error', message: 'Network error. Please try again.' });
+    } finally {
+      setNewsletterLoading(false);
+    }
+  };
 
   // Mock data - replace with API calls
   const rooms = [
@@ -315,22 +346,77 @@ export default function HomePage() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="bg-primary text-white py-16 px-4">
+      <section className="bg-primary text-white py-16 px-4 relative">
         <div className="container mx-auto text-center max-w-2xl">
           <h2 className="text-3xl font-heading font-bold mb-4">
             We Offer Every Month 20% Off for Our Subscribers
           </h2>
-          <div className="flex gap-2 max-w-md mx-auto mt-8">
+          <p className="text-white/80 mb-8">Subscribe to receive exclusive deals, seasonal offers, and updates straight to your inbox.</p>
+
+          <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md mx-auto">
             <input
               type="email"
+              value={newsletterEmail}
+              onChange={e => setNewsletterEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 px-4 py-3 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent"
+              required
+              disabled={newsletterLoading}
+              className="flex-1 px-4 py-3 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent disabled:opacity-70"
             />
-            <Button variant="secondary" size="lg">
-              Subscribe
+            <Button variant="secondary" size="lg" type="submit" disabled={newsletterLoading}>
+              {newsletterLoading ? <Loader2 size={18} className="animate-spin" /> : 'Subscribe'}
             </Button>
-          </div>
+          </form>
         </div>
+
+        {/* Success / Error Popup */}
+        {newsletterPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4" onClick={() => setNewsletterPopup(null)}>
+            <div className="absolute inset-0 bg-black/40" />
+            <div
+              className="relative bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center"
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setNewsletterPopup(null)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
+
+              {newsletterPopup.type === 'success' ? (
+                <>
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="text-green-500" size={36} />
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-gray-900 mb-2">You&apos;re Subscribed!</h3>
+                  <p className="text-gray-600 text-sm mb-1">{newsletterPopup.message}</p>
+                  <p className="text-gray-500 text-sm">Check your inbox for a welcome email from White Vintage Bungalow.</p>
+                  <button
+                    onClick={() => setNewsletterPopup(null)}
+                    className="mt-6 w-full bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
+                  >
+                    Done
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <X className="text-red-500" size={36} />
+                  </div>
+                  <h3 className="text-xl font-heading font-bold text-gray-900 mb-2">Oops!</h3>
+                  <p className="text-gray-600 text-sm">{newsletterPopup.message}</p>
+                  <button
+                    onClick={() => setNewsletterPopup(null)}
+                    className="mt-6 w-full bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );
